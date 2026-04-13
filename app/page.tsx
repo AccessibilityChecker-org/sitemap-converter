@@ -2,9 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-type ConvertResponse =
-  | { ok: true; url: string; count: number; links: string[] }
-  | { ok: false; error: string };
+type ServerEvent =
+  | { type: "stage"; msg: string }
+  | { type: "bytes"; n: number }
+  | { type: "meta"; finalUrl: string; contentType: string; totalBytes: number | null }
+  | { type: "link"; href: string; index: number }
+  | { type: "done"; count: number; url: string; links: string[] }
+  | { type: "error"; error: string };
 
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -21,26 +25,37 @@ function shortPath(href: string) {
   }
 }
 
+function formatBytes(n: number) {
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / 1024 / 1024).toFixed(2)} MB`;
+}
+
 export default function Page() {
   const [url, setUrl] = useState("");
   const [timeout, setTimeoutValue] = useState(30);
   const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState<{
-    kind: "loading" | "error" | "success";
-    html: string;
-  } | null>(null);
   const [links, setLinks] = useState<string[]>([]);
   const [filter, setFilter] = useState("");
   const [domain, setDomain] = useState("—");
   const [issued, setIssued] = useState("—");
-  const [count, setCount] = useState(0);
+  const [finalCount, setFinalCount] = useState(0);
   const [animatedCount, setAnimatedCount] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
   const [dateline, setDateline] = useState("— · —");
 
+  // Live progress state
+  const [stageMsg, setStageMsg] = useState<string>("");
+  const [bytes, setBytes] = useState<number>(0);
+  const [totalBytes, setTotalBytes] = useState<number | null>(null);
+  const [progressLog, setProgressLog] = useState<string[]>([]);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [finished, setFinished] = useState(false);
+
   const manifestRef = useRef<HTMLDivElement | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rafRef = useRef<number | null>(null);
+  const logRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const now = new Date();
@@ -49,10 +64,10 @@ export default function Page() {
     );
   }, []);
 
-  // Count animation
+  // Animate final count once conversion finishes
   useEffect(() => {
-    if (count === 0) {
-      setAnimatedCount(0);
+    if (!finished || finalCount === 0) {
+      setAnimatedCount(finalCount);
       return;
     }
     const duration = 700;
@@ -60,20 +75,28 @@ export default function Page() {
     const tick = (t: number) => {
       const p = Math.min(1, (t - start) / duration);
       const eased = 1 - Math.pow(1 - p, 3);
-      setAnimatedCount(Math.round(count * eased));
+      setAnimatedCount(Math.round(finalCount * eased));
       if (p < 1) rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [count]);
+  }, [finished, finalCount]);
+
+  // Auto-scroll progress log
+  useEffect(() => {
+    if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
+  }, [progressLog, links.length, bytes]);
 
   const showToast = (msg: string) => {
     setToast(msg);
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), 1800);
   };
+
+  const appendLog = (line: string) =>
+    setProgressLog((prev) => [...prev, line]);
 
   const filteredLinks = useMemo(() => {
     const q = filter.trim().toLowerCase();
@@ -85,18 +108,27 @@ export default function Page() {
     }));
   }, [links, filter]);
 
+  const resetRun = () => {
+    setLinks([]);
+    setFinalCount(0);
+    setAnimatedCount(0);
+    setFinished(false);
+    setErrorMsg(null);
+    setStageMsg("");
+    setBytes(0);
+    setTotalBytes(null);
+    setProgressLog([]);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = url.trim();
     if (!trimmed) return;
 
     setSubmitting(true);
-    setLinks([]);
-    setCount(0);
-    setStatus({
-      kind: "loading",
-      html: `<span class="ticker"></span><span>Dispatching request to ${trimmed} …</span>`,
-    });
+    resetRun();
+    appendLog(`▸ Dispatching request to ${trimmed}`);
+    setStageMsg("Connecting…");
 
     try {
       const res = await fetch("/api/convert", {
@@ -104,36 +136,105 @@ export default function Page() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: trimmed, timeout }),
       });
-      const data = (await res.json()) as ConvertResponse;
 
-      if (!res.ok || !data.ok) {
-        const err = "error" in data ? data.error : "The request could not be completed.";
-        setStatus({ kind: "error", html: `✕ &nbsp;${err}` });
-      } else {
-        setLinks(data.links);
-        setCount(data.count);
+      if (!res.body) {
+        throw new Error("No response body from server.");
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      const collected: string[] = [];
+
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          let evt: ServerEvent;
+          try {
+            evt = JSON.parse(line);
+          } catch {
+            continue;
+          }
+          handleEvent(evt, collected);
+        }
+      }
+      buffer += decoder.decode();
+      if (buffer.trim()) {
         try {
-          setDomain(new URL(data.url).hostname);
+          handleEvent(JSON.parse(buffer) as ServerEvent, collected);
+        } catch {
+          /* ignore */
+        }
+      }
+    } catch (err: any) {
+      setErrorMsg(`Network error — ${err?.message || err}`);
+      appendLog(`✕ Network error — ${err?.message || err}`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleEvent = (evt: ServerEvent, collected: string[]) => {
+    switch (evt.type) {
+      case "stage":
+        setStageMsg(evt.msg);
+        appendLog(`· ${evt.msg}`);
+        break;
+      case "meta": {
+        try {
+          setDomain(new URL(evt.finalUrl).hostname);
         } catch {
           setDomain("—");
         }
+        setTotalBytes(evt.totalBytes);
+        appendLog(
+          `· Final URL: ${evt.finalUrl} (${evt.contentType}${
+            evt.totalBytes ? `, ${formatBytes(evt.totalBytes)}` : ""
+          })`
+        );
+        break;
+      }
+      case "bytes":
+        setBytes(evt.n);
+        break;
+      case "link":
+        collected.push(evt.href);
+        // Flush in small batches to keep React responsive
+        if (collected.length % 25 === 0 || collected.length <= 25) {
+          setLinks([...collected]);
+        }
+        break;
+      case "done": {
+        setLinks(evt.links);
+        setFinalCount(evt.count);
         const d = new Date();
         setIssued(
           `${d.toLocaleDateString(undefined, { month: "short", day: "numeric" })} · ${d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`
         );
-        setStatus({
-          kind: "success",
-          html: `✓ &nbsp;Manifest issued. <strong>${data.count}</strong> internal address${data.count === 1 ? "" : "es"} catalogued.`,
-        });
-        // scroll after DOM updates
+        setStageMsg(
+          `Done — ${evt.count} internal address${evt.count === 1 ? "" : "es"} catalogued.`
+        );
+        appendLog(`✓ Manifest issued. ${evt.count} link(s).`);
+        setFinished(true);
         setTimeout(() => {
-          manifestRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 60);
+          manifestRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 80);
+        break;
       }
-    } catch (err: any) {
-      setStatus({ kind: "error", html: `✕ &nbsp;Network error — ${err?.message || err}` });
-    } finally {
-      setSubmitting(false);
+      case "error":
+        setErrorMsg(evt.error);
+        appendLog(`✕ ${evt.error}`);
+        setStageMsg("Failed.");
+        break;
     }
   };
 
@@ -160,7 +261,23 @@ export default function Page() {
     showToast("↓ Manifest downloaded");
   };
 
-  const paddedCount = String(animatedCount).padStart(3, "0");
+  const paddedCount = String(finished ? animatedCount : links.length).padStart(
+    3,
+    "0"
+  );
+
+  // Percentage if we know content-length
+  const pct =
+    totalBytes && totalBytes > 0
+      ? Math.min(100, Math.round((bytes / totalBytes) * 100))
+      : null;
+
+  const liveVisible = submitting || errorMsg || progressLog.length > 0;
+  const statusKind: "loading" | "error" | "success" = errorMsg
+    ? "error"
+    : finished
+    ? "success"
+    : "loading";
 
   return (
     <div className="frame">
@@ -193,7 +310,7 @@ export default function Page() {
             ledger of every internal address it can find. <em>One per line. No theatrics.</em>
           </p>
           <ul className="meta-list">
-            <li><span>Method</span><span>HTTP · 1 request</span></li>
+            <li><span>Method</span><span>HTTP · streamed</span></li>
             <li><span>Filtering</span><span>Same-domain only</span></li>
             <li><span>Output</span><span>.txt · sorted · unique</span></li>
             <li><span>Hosted</span><span>Vercel</span></li>
@@ -233,7 +350,9 @@ export default function Page() {
                 min={1}
                 max={120}
                 value={timeout}
-                onChange={(e) => setTimeoutValue(parseInt(e.target.value, 10) || 30)}
+                onChange={(e) =>
+                  setTimeoutValue(parseInt(e.target.value, 10) || 30)
+                }
               />
             </div>
           </div>
@@ -245,7 +364,7 @@ export default function Page() {
 
             <div className="examples">
               {[
-                "https://wmh.org/site-map/",
+                "https://www.wmh.org/site-map/",
                 "https://wordpress.org/sitemap/",
                 "https://flask.palletsprojects.com/",
               ].map((u) => (
@@ -261,11 +380,89 @@ export default function Page() {
             </div>
           </div>
 
-          {status && (
-            <div
-              className={`status show ${status.kind}`}
-              dangerouslySetInnerHTML={{ __html: status.html }}
-            />
+          {liveVisible && (
+            <div className={`status show ${statusKind}`}>
+              {statusKind === "loading" && <span className="ticker" />}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+                  <span>
+                    {errorMsg
+                      ? `✕ ${errorMsg}`
+                      : stageMsg || "Working…"}
+                  </span>
+                  <span style={{ color: "var(--ink-soft)", whiteSpace: "nowrap" }}>
+                    {bytes > 0 && `${formatBytes(bytes)}`}
+                    {pct !== null && ` · ${pct}%`}
+                    {links.length > 0 && ` · ${links.length} link${links.length === 1 ? "" : "s"}`}
+                  </span>
+                </div>
+
+                {submitting && (
+                  <div
+                    style={{
+                      marginTop: 10,
+                      height: 3,
+                      background: "var(--hairline)",
+                      position: "relative",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {pct !== null ? (
+                      <div
+                        style={{
+                          width: `${pct}%`,
+                          height: "100%",
+                          background: "var(--vermilion)",
+                          transition: "width .2s ease",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: "30%",
+                          background: "var(--vermilion)",
+                          animation: "slide 1.2s ease-in-out infinite",
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
+
+                {progressLog.length > 0 && (
+                  <div
+                    ref={logRef}
+                    style={{
+                      marginTop: 12,
+                      maxHeight: 120,
+                      overflowY: "auto",
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: 11,
+                      lineHeight: 1.6,
+                      color: "var(--ink-soft)",
+                      borderTop: "1px dotted var(--hairline)",
+                      paddingTop: 8,
+                    }}
+                  >
+                    {progressLog.map((line, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </form>
       </section>
@@ -277,7 +474,9 @@ export default function Page() {
         <div className="sec-head" style={{ marginTop: 32 }}>
           <div className="sec-num">§ 02</div>
           <h2 className="sec-title">The manifest</h2>
-          <div className="sec-tag">Sorted alphabetically</div>
+          <div className="sec-tag">
+            {submitting ? "Streaming in…" : "Sorted alphabetically"}
+          </div>
         </div>
 
         <div className="manifest-meta">
@@ -321,10 +520,7 @@ export default function Page() {
 
         <div className="index">
           {filteredLinks.map(({ href, i, visible }) => (
-            <div
-              key={href}
-              className={`row ${visible ? "" : "hidden"}`}
-            >
+            <div key={href} className={`row ${visible ? "" : "hidden"}`}>
               <span className="num">{String(i + 1).padStart(3, "0")}</span>
               <a href={href} target="_blank" rel="noopener noreferrer">
                 {shortPath(href)}
@@ -347,8 +543,8 @@ export default function Page() {
         <div>
           <h4>Method</h4>
           <p>
-            Next.js · React · cheerio. A single GET parses the DOM and resolves every
-            anchor against the supplied base URL.
+            Next.js · React · cheerio. A streaming GET reports byte progress, then each
+            anchor is resolved against the final (post-redirect) base URL and emitted live.
           </p>
         </div>
         <div>
@@ -368,6 +564,13 @@ export default function Page() {
       </footer>
 
       <div className={`toast ${toast ? "show" : ""}`}>{toast}</div>
+
+      <style jsx>{`
+        @keyframes slide {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(400%); }
+        }
+      `}</style>
     </div>
   );
 }
