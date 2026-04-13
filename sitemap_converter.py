@@ -54,6 +54,8 @@ def convert_sitemap(url, output_file=None, timeout=30, emit_stdout=True):
     """Fetch *url*, extract internal links, and optionally write to *output_file*.
 
     If *output_file* is ``None`` the links are printed to stdout.
+    Set *emit_stdout* to ``False`` to suppress stdout output when not writing
+    to a file (useful for GUI integration).
     Returns the list of extracted links.
     """
     html = fetch_page(url, timeout=timeout)
@@ -122,7 +124,7 @@ def launch_gui(default_url="", default_output="", default_timeout=30):
 
     status_var = tk.StringVar(value="Ready")
     tk.Label(main_frame, textvariable=status_var, anchor="w").grid(
-        row=6, column=0, columnspan=2, sticky="ew", pady=(0, 8)
+        row=7, column=0, columnspan=2, sticky="ew", pady=(0, 8)
     )
 
     results_text = tk.Text(main_frame, wrap="none", height=16)
@@ -151,7 +153,7 @@ def launch_gui(default_url="", default_output="", default_timeout=30):
         try:
             timeout = int(timeout_raw)
             if timeout <= 0:
-                raise ValueError("Timeout must be positive")
+                raise ValueError("Timeout must be a positive integer")
         except ValueError:
             messagebox.showerror(
                 "Invalid timeout", "Timeout must be a positive integer."
@@ -181,7 +183,7 @@ def launch_gui(default_url="", default_output="", default_timeout=30):
         status_var.set(f"Done: extracted {len(links)} link(s).{status_suffix}")
 
     tk.Button(main_frame, text="Convert", command=run_conversion).grid(
-        row=7, column=0, sticky="w", pady=(0, 8)
+        row=6, column=0, sticky="w", pady=(0, 8)
     )
 
     url_entry.focus_set()
@@ -229,7 +231,7 @@ def main():
         return
 
     if not args.url:
-        parser.error("the following arguments are required: url (unless --gui is used)")
+        parser.error("the following arguments are required: url")
 
     try:
         links = convert_sitemap(args.url, args.output, args.timeout)
