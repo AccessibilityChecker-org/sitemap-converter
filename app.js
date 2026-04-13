@@ -15,7 +15,10 @@ function App() {
 
   function buildFileName() {
     try {
-      const host = new URL(url).hostname.replace(/[^a-z0-9.-]/gi, "-");
+      const host = new URL(url).hostname
+        .replace(/[^a-z0-9.-]/gi, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
       return `${host || "sitemap"}-urls.txt`;
     } catch {
       return "sitemap-urls.txt";

@@ -67,7 +67,7 @@ export default async function handler(req, res) {
 
   const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
   const url = (body.url || "").trim();
-  const timeout = Number.isInteger(body.timeout) ? body.timeout : Number.parseInt(body.timeout || "30", 10);
+  const timeout = Number.parseInt(body.timeout || "30", 10);
 
   if (!url) {
     return res.status(400).json({ error: "Please provide a sitemap URL." });
