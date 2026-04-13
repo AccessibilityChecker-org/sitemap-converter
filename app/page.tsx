@@ -89,10 +89,10 @@ export default function Page() {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [progressLog, links.length, bytes]);
 
-  const showToast = (msg: string) => {
+  const showToast = (msg: string, duration = 1800) => {
     setToast(msg);
     if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 1800);
+    toastTimer.current = setTimeout(() => setToast(null), duration);
   };
 
   const appendLog = (line: string) =>
@@ -222,6 +222,10 @@ export default function Page() {
         );
         appendLog(`✓ Manifest issued. ${evt.count} link(s).`);
         setFinished(true);
+        showToast(
+          `✓ Scan complete — ${evt.count} link${evt.count === 1 ? "" : "s"} found`,
+          3500
+        );
         setTimeout(() => {
           manifestRef.current?.scrollIntoView({
             behavior: "smooth",
