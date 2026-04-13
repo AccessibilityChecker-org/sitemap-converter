@@ -3,429 +3,702 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sitemap Converter — Crawl any sitemap into a clean link list</title>
+<title>The Cartographer — A sitemap-to-manifest converter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500;1,9..144,700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b0d17;
-    --bg-2: #11142a;
-    --card: rgba(255,255,255,0.04);
-    --card-border: rgba(255,255,255,0.08);
-    --text: #f3f4f6;
-    --muted: #9aa3b2;
-    --accent: #7c5cff;
-    --accent-2: #22d3ee;
-    --accent-3: #ec4899;
-    --success: #10b981;
-    --danger: #f87171;
+    --paper:    #f1ede4;
+    --paper-2:  #e8e2d4;
+    --ink:      #14110f;
+    --ink-soft: #4a423a;
+    --rule:     #1a1714;
+    --hairline: rgba(20,17,15,0.18);
+    --vermilion:#e23e16;
+    --ochre:    #b08544;
+    --grid-line:rgba(20,17,15,0.05);
   }
-  * { box-sizing: border-box; }
+
+  *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+
+  html { background: var(--paper); }
+
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    min-height: 100vh;
+    font-family: 'Fraunces', 'Times New Roman', serif;
+    font-optical-sizing: auto;
+    color: var(--ink);
+    background: var(--paper);
+    /* Faint paper grid */
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-attachment: fixed;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     overflow-x: hidden;
   }
-  /* Animated gradient background */
-  .bg-orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.55;
-    z-index: 0;
+
+  /* Subtle paper grain via SVG noise */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
     pointer-events: none;
-    animation: float 18s ease-in-out infinite;
-  }
-  .bg-orb.one { width: 520px; height: 520px; background: var(--accent); top: -120px; left: -100px; }
-  .bg-orb.two { width: 420px; height: 420px; background: var(--accent-2); top: 30%; right: -120px; animation-delay: -6s; }
-  .bg-orb.three { width: 380px; height: 380px; background: var(--accent-3); bottom: -120px; left: 30%; animation-delay: -12s; }
-  @keyframes float {
-    0%,100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(40px,-30px) scale(1.08); }
+    z-index: 0;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.07 0 0 0 0 0.06 0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: multiply;
   }
 
-  .container { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 28px 24px 80px; }
+  .frame {
+    position: relative;
+    z-index: 1;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 28px 40px 96px;
+  }
+  @media (max-width: 720px) { .frame { padding: 20px 22px 60px; } }
 
-  /* Nav */
-  nav {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 80px;
-  }
-  .logo {
-    display: flex; align-items: center; gap: 10px;
-    font-weight: 700; font-size: 18px; letter-spacing: -0.01em;
-  }
-  .logo-mark {
-    width: 32px; height: 32px; border-radius: 9px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    display: grid; place-items: center; font-size: 16px;
-    box-shadow: 0 8px 24px -8px rgba(124,92,255,0.6);
-  }
-  .nav-links { display: flex; gap: 28px; color: var(--muted); font-size: 14px; }
-  .nav-links a { color: inherit; text-decoration: none; transition: color .2s; }
-  .nav-links a:hover { color: var(--text); }
-
-  /* Hero */
-  .hero { text-align: center; max-width: 760px; margin: 0 auto 56px; }
-  .badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 14px; border-radius: 999px;
-    background: rgba(124,92,255,0.12); border: 1px solid rgba(124,92,255,0.3);
-    color: #c4b5ff; font-size: 13px; font-weight: 500; margin-bottom: 22px;
-  }
-  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-2); box-shadow: 0 0 12px var(--accent-2); }
-  h1 {
-    font-size: clamp(38px, 6vw, 64px);
-    font-weight: 800; line-height: 1.05; letter-spacing: -0.03em;
-    margin: 0 0 20px;
-  }
-  h1 .grad {
-    background: linear-gradient(120deg, var(--accent), var(--accent-2) 50%, var(--accent-3));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .lede { font-size: 18px; color: var(--muted); max-width: 580px; margin: 0 auto; }
-
-  /* Converter card */
-  .converter {
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-    border: 1px solid var(--card-border);
-    border-radius: 24px;
-    padding: 28px;
-    backdrop-filter: blur(14px);
-    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7);
-  }
-  .form-row {
+  /* ---------- MASTHEAD ---------- */
+  .masthead {
+    border-top: 6px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 0 12px;
     display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 12px;
-    align-items: stretch;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
   }
-  @media (max-width: 720px) {
-    .form-row { grid-template-columns: 1fr; }
+  .masthead .left   { text-align: left;   }
+  .masthead .right  { text-align: right;  }
+  .masthead .center {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144;
   }
-  .input-wrap {
-    position: relative; display: flex; align-items: center;
-    background: rgba(0,0,0,0.35);
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
-    transition: border-color .2s, box-shadow .2s;
+  .masthead .center sup {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 9px;
+    color: var(--vermilion);
+    margin-left: 4px;
+    letter-spacing: 0.1em;
   }
-  .input-wrap:focus-within {
-    border-color: rgba(124,92,255,0.6);
-    box-shadow: 0 0 0 4px rgba(124,92,255,0.15);
-  }
-  .input-wrap svg { margin: 0 14px; color: var(--muted); flex-shrink: 0; }
-  input[type="url"], input[type="number"] {
-    flex: 1; background: transparent; border: 0; outline: 0;
-    color: var(--text); font: inherit; font-size: 15px;
-    padding: 16px 16px 16px 0; min-width: 0;
-  }
-  input::placeholder { color: #5a6374; }
-  .timeout-wrap {
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(0,0,0,0.35);
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
-    padding: 0 14px;
-    color: var(--muted); font-size: 13px;
-  }
-  .timeout-wrap input { width: 44px; padding: 14px 0; text-align: center; color: var(--text); }
-  .btn {
-    border: 0; cursor: pointer; font: inherit; font-weight: 600; font-size: 15px;
-    padding: 0 26px; border-radius: 14px;
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    transition: transform .15s, box-shadow .2s, opacity .2s;
-  }
-  .btn-primary {
-    color: white;
-    background: linear-gradient(135deg, var(--accent), #5b3df5);
-    box-shadow: 0 12px 30px -10px rgba(124,92,255,0.7);
-  }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 18px 40px -12px rgba(124,92,255,0.9); }
-  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  .btn-ghost {
-    color: var(--text);
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--card-border);
-    padding: 10px 16px; font-size: 14px;
-  }
-  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
 
-  .examples { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .examples-label { color: var(--muted); font-size: 13px; margin-right: 4px; }
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 80px 0 56px;
+    border-bottom: 1px solid var(--hairline);
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 64px;
+    align-items: end;
+  }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 40px; padding: 48px 0 40px; } }
+
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--vermilion);
+    margin-bottom: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .kicker::before {
+    content: ''; width: 36px; height: 1px; background: var(--vermilion);
+  }
+
+  h1.headline {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 144;
+    font-weight: 400;
+    font-size: clamp(58px, 11vw, 156px);
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+    margin: 0;
+    color: var(--ink);
+  }
+  h1.headline em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--vermilion);
+  }
+  h1.headline .ampers {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.65em;
+    vertical-align: 0.08em;
+    color: var(--ochre);
+    margin: 0 -0.06em;
+  }
+  h1.headline .small-cap {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 28px;
+  }
+
+  .lede-block {
+    border-left: 1px solid var(--rule);
+    padding-left: 22px;
+  }
+  .lede {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 14;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0 0 22px;
+  }
+  .lede strong { color: var(--ink); font-weight: 500; }
+  .meta-list {
+    list-style: none; margin: 0; padding: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .meta-list li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted var(--hairline); }
+  .meta-list li span:last-child { color: var(--ink); }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .sec-head {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: baseline;
+    gap: 24px;
+    padding: 32px 0 14px;
+    border-bottom: 1px solid var(--rule);
+    margin-top: 56px;
+  }
+  .sec-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.18em;
+    color: var(--vermilion);
+  }
+  .sec-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 48;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .sec-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- INPUT FORM ---------- */
+  .form-wrap { padding: 40px 0 8px; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 720px) { .field-grid { grid-template-columns: 1fr; gap: 20px; } }
+
+  .field {
+    border-bottom: 2px solid var(--rule);
+    padding-bottom: 6px;
+    position: relative;
+  }
+  .field-label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .field-label .req { color: var(--vermilion); }
+  .field input {
+    width: 100%;
+    background: transparent;
+    border: 0; outline: 0;
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 48;
+    font-weight: 400;
+    font-size: clamp(22px, 3.4vw, 38px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    padding: 6px 0 12px;
+    caret-color: var(--vermilion);
+  }
+  .field input::placeholder { color: var(--ink-soft); opacity: 0.5; font-style: italic; }
+  .field input[type="number"] { font-size: 28px; }
+
+  .form-actions {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+    margin-top: 32px;
+  }
+
+  .submit-btn {
+    --h: 64px;
+    height: var(--h);
+    background: var(--ink);
+    color: var(--paper);
+    border: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding: 0 36px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 18px;
+    position: relative;
+    transition: background .2s, color .2s, transform .15s;
+  }
+  .submit-btn::after {
+    content: '';
+    width: 36px; height: 1px; background: currentColor;
+    transition: width .25s ease;
+  }
+  .submit-btn:hover { background: var(--vermilion); }
+  .submit-btn:hover::after { width: 56px; }
+  .submit-btn:disabled { opacity: 0.6; cursor: wait; }
+
+  .examples {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .examples::before { content: '↳ Try'; color: var(--ink); }
   .chip {
-    background: rgba(255,255,255,0.04); color: var(--muted);
-    border: 1px solid var(--card-border); border-radius: 999px;
-    padding: 6px 12px; font-size: 12.5px; cursor: pointer;
-    transition: all .15s;
+    background: transparent; border: 0; cursor: pointer;
+    color: var(--ink); padding: 6px 0;
+    font: inherit; letter-spacing: inherit; text-transform: none;
+    border-bottom: 1px solid var(--ink);
+    transition: color .15s, border-color .15s;
   }
-  .chip:hover { color: var(--text); border-color: rgba(124,92,255,0.5); }
+  .chip:hover { color: var(--vermilion); border-color: var(--vermilion); }
 
-  /* Status / error / progress */
+  /* ---------- STATUS ---------- */
   .status {
-    margin-top: 18px;
+    margin-top: 28px;
     display: none;
-    align-items: center; gap: 12px;
+    align-items: center; gap: 16px;
     padding: 14px 18px;
-    border-radius: 12px;
-    font-size: 14px;
+    border-left: 3px solid var(--ink);
+    background: var(--paper-2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
   }
   .status.show { display: flex; }
-  .status.loading { background: rgba(124,92,255,0.1); border: 1px solid rgba(124,92,255,0.3); color: #c4b5ff; }
-  .status.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
-  .status.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--success); }
-  .spinner {
-    width: 16px; height: 16px; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-top-color: var(--accent-2);
-    animation: spin 0.8s linear infinite;
+  .status.loading { border-color: var(--ochre); }
+  .status.error   { border-color: var(--vermilion); color: var(--vermilion); background: rgba(226,62,22,0.06); }
+  .status.success { border-color: var(--ink); }
+  .status .ticker {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--vermilion);
+    animation: pulse 0.9s ease-in-out infinite;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(.7); } }
 
-  /* Results */
-  .results { margin-top: 32px; display: none; }
-  .results.show { display: block; animation: fadeUp .4s ease; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  .results-header {
-    display: flex; flex-wrap: wrap; gap: 12px;
-    align-items: center; justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .stats { display: flex; gap: 24px; flex-wrap: wrap; }
-  .stat { display: flex; flex-direction: column; }
-  .stat-num { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
-  .stat-num.grad {
-    background: linear-gradient(120deg, var(--accent-2), var(--accent));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-  .actions { display: flex; gap: 8px; }
-  .links-list {
-    background: rgba(0,0,0,0.4);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
-    max-height: 480px; overflow: auto;
-    padding: 6px;
-  }
-  .link-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 14px; border-radius: 10px;
-    font-family: 'JetBrains Mono', monospace; font-size: 13px;
-    transition: background .15s;
-  }
-  .link-row:hover { background: rgba(255,255,255,0.04); }
-  .link-num { color: var(--muted); width: 36px; flex-shrink: 0; text-align: right; font-size: 12px; }
-  .link-row a { color: #cdd5e0; text-decoration: none; word-break: break-all; flex: 1; }
-  .link-row a:hover { color: var(--accent-2); }
-  .link-ext { color: var(--muted); flex-shrink: 0; opacity: 0; transition: opacity .15s; }
-  .link-row:hover .link-ext { opacity: 1; }
+  /* ---------- MANIFEST / RESULTS ---------- */
+  .manifest { display: none; margin-top: 56px; }
+  .manifest.show { display: block; animation: slip .5s ease both; }
+  @keyframes slip { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
-  /* Custom scrollbar */
-  .links-list::-webkit-scrollbar { width: 10px; }
-  .links-list::-webkit-scrollbar-track { background: transparent; }
-  .links-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-  .links-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
-
-  /* Features */
-  .features {
-    margin-top: 100px;
+  .manifest-meta {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-top: 28px;
   }
-  .feature {
-    padding: 24px;
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 18px;
-    transition: transform .2s, border-color .2s;
+  @media (max-width: 720px) { .manifest-meta { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    padding: 22px 20px;
+    border-right: 1px dotted var(--hairline);
+    display: flex; flex-direction: column; gap: 8px;
   }
-  .feature:hover { transform: translateY(-3px); border-color: rgba(124,92,255,0.3); }
-  .feature-icon {
-    width: 42px; height: 42px; border-radius: 11px;
-    background: rgba(124,92,255,0.15); color: var(--accent);
-    display: grid; place-items: center; margin-bottom: 14px;
+  .stat:last-child { border-right: 0; }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
   }
-  .feature h3 { margin: 0 0 6px; font-size: 16px; }
-  .feature p { margin: 0; font-size: 14px; color: var(--muted); }
+  .stat-value {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 144;
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .stat-value.ital { font-style: italic; font-size: 22px; font-weight: 400; word-break: break-all; }
+  .stat-value.accent { color: var(--vermilion); }
 
-  footer { margin-top: 80px; text-align: center; color: var(--muted); font-size: 13px; }
-  footer a { color: var(--accent-2); text-decoration: none; }
+  .actions-bar {
+    display: flex; flex-wrap: wrap; gap: 20px;
+    margin: 28px 0 22px;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .ghost-btn {
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    padding: 12px 18px;
+    cursor: pointer;
+    font: inherit; letter-spacing: inherit; text-transform: inherit;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: background .15s, color .15s;
+  }
+  .ghost-btn:hover { background: var(--ink); color: var(--paper); }
+  .ghost-btn.accent { border-color: var(--vermilion); color: var(--vermilion); }
+  .ghost-btn.accent:hover { background: var(--vermilion); color: var(--paper); }
+
+  .filter-input {
+    flex: 1; min-width: 220px;
+    background: transparent;
+    border: 0; border-bottom: 1px solid var(--ink);
+    padding: 10px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.04em;
+    color: var(--ink); outline: 0;
+  }
+  .filter-input::placeholder { color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.18em; font-size: 10px; }
+
+  /* Index list */
+  .index {
+    border-top: 2px solid var(--rule);
+    max-height: 620px;
+    overflow-y: auto;
+  }
+  .index::-webkit-scrollbar { width: 8px; }
+  .index::-webkit-scrollbar-track { background: var(--paper-2); }
+  .index::-webkit-scrollbar-thumb { background: var(--ink); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 24px;
+    align-items: baseline;
+    padding: 14px 8px 14px 12px;
+    border-bottom: 1px dotted var(--hairline);
+    transition: background .12s;
+  }
+  .row:hover { background: var(--paper-2); }
+  .row.hidden { display: none; }
+  .row .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.12em;
+    color: var(--vermilion);
+    font-variant-numeric: tabular-nums;
+  }
+  .row a {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 14;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--ink);
+    text-decoration: none;
+    word-break: break-all;
+    line-height: 1.35;
+    transition: color .12s;
+    position: relative;
+  }
+  .row a::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -2px;
+    height: 1px; background: var(--vermilion);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .25s ease;
+  }
+  .row:hover a { color: var(--vermilion); }
+  .row:hover a::after { transform: scaleX(1); }
+  .row .path {
+    color: var(--ink-soft);
+    font-style: italic;
+    font-weight: 300;
+  }
+  .row .ext {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .row:hover .ext { opacity: 1; }
+
+  /* ---------- COLOPHON / FOOTER ---------- */
+  .colophon {
+    margin-top: 96px;
+    border-top: 6px solid var(--rule);
+    padding-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 36px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 720px) { .colophon { grid-template-columns: 1fr; gap: 20px; } }
+  .colophon h4 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 10px;
+    text-transform: none;
+  }
+  .colophon p { margin: 0 0 8px; }
+  .colophon a { color: var(--vermilion); text-decoration: none; border-bottom: 1px solid var(--vermilion); }
 
   /* Toast */
   .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: rgba(20,22,40,0.95); border: 1px solid var(--card-border);
-    color: var(--text); padding: 12px 20px; border-radius: 12px;
-    font-size: 14px; opacity: 0; pointer-events: none;
+    position: fixed; left: 50%; bottom: 28px;
+    transform: translateX(-50%) translateY(14px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    opacity: 0; pointer-events: none;
     transition: opacity .25s, transform .25s;
-    backdrop-filter: blur(10px); z-index: 100;
+    z-index: 50;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Selection */
+  ::selection { background: var(--vermilion); color: var(--paper); }
+
+  /* Reveal */
+  .reveal { opacity: 0; transform: translateY(18px); animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
+  .reveal.d1 { animation-delay: .05s; }
+  .reveal.d2 { animation-delay: .15s; }
+  .reveal.d3 { animation-delay: .28s; }
+  .reveal.d4 { animation-delay: .42s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
-  <div class="bg-orb one"></div>
-  <div class="bg-orb two"></div>
-  <div class="bg-orb three"></div>
+  <div class="frame">
 
-  <div class="container">
-    <nav>
-      <div class="logo">
-        <div class="logo-mark">S</div>
-        <span>Sitemap Converter</span>
-      </div>
-      <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="https://github.com/AccessibilityChecker-org/sitemap-converter" target="_blank" rel="noopener">GitHub</a>
-      </div>
-    </nav>
+    <!-- ===== MASTHEAD ===== -->
+    <header class="masthead">
+      <div class="left">Vol. I &nbsp;·&nbsp; No. 042</div>
+      <div class="center">The&nbsp;<em>Cartographer</em><sup id="dateline">— · —</sup></div>
+      <div class="right">A field manual for sitemaps</div>
+    </header>
 
+    <!-- ===== HERO ===== -->
     <section class="hero">
-      <div class="badge"><span class="badge-dot"></span> Free · No signup · Runs locally</div>
-      <h1>Turn any sitemap into a <span class="grad">clean link list</span></h1>
-      <p class="lede">Paste the URL of a WordPress visual sitemap (or any page full of internal links) and we'll crawl it, extract every same-domain link, and give you a tidy list you can copy or download.</p>
+      <div class="reveal d1">
+        <div class="kicker">A utility, no. 01 — extraction</div>
+        <h1 class="headline">
+          Every link,<br/>
+          <em>uncovered</em> <span class="ampers">&amp;</span><br/>
+          set in <em>order</em>.
+          <span class="small-cap">Sitemap → plain-text manifest</span>
+        </h1>
+      </div>
+
+      <aside class="lede-block reveal d2">
+        <p class="lede">
+          Hand this instrument any <strong>visual sitemap page</strong> — a WordPress index, a docs hub, a humble table of contents — and it returns a clean, sorted ledger of every internal address it can find. <em>One per line. No theatrics.</em>
+        </p>
+        <ul class="meta-list">
+          <li><span>Method</span><span>HTTP · 1 request</span></li>
+          <li><span>Filtering</span><span>Same-domain only</span></li>
+          <li><span>Output</span><span>.txt · sorted · unique</span></li>
+          <li><span>Hosted</span><span>Localhost</span></li>
+        </ul>
+      </aside>
     </section>
 
-    <section class="converter">
+    <!-- ===== SECTION 01 — INPUT ===== -->
+    <div class="sec-head reveal d3">
+      <div class="sec-num">§ 01</div>
+      <h2 class="sec-title">Specimen submission</h2>
+      <div class="sec-tag">Provide one (1) URL</div>
+    </div>
+
+    <section class="form-wrap">
       <form id="form" autocomplete="off">
-        <div class="form-row">
-          <div class="input-wrap">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <div class="field-grid">
+          <div class="field">
+            <div class="field-label">
+              <span>Sitemap address</span>
+              <span class="req">▸ required</span>
+            </div>
             <input type="url" id="url" name="url" placeholder="https://example.com/sitemap/" required />
           </div>
-          <div class="timeout-wrap" title="HTTP request timeout">
-            <span>Timeout</span>
+          <div class="field">
+            <div class="field-label">
+              <span>Timeout</span>
+              <span>seconds</span>
+            </div>
             <input type="number" id="timeout" min="1" max="120" value="30" />
-            <span>s</span>
           </div>
-          <button type="submit" class="btn btn-primary" id="submit">
-            <span id="submit-label">Convert</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-          </button>
         </div>
 
-        <div class="examples">
-          <span class="examples-label">Try:</span>
-          <button type="button" class="chip" data-url="https://wordpress.org/sitemap/">wordpress.org/sitemap</button>
-          <button type="button" class="chip" data-url="https://www.python.org/sitemap.xml">python.org</button>
-          <button type="button" class="chip" data-url="https://flask.palletsprojects.com/">flask docs</button>
+        <div class="form-actions">
+          <button type="submit" class="submit-btn" id="submit">
+            <span id="submit-label">Begin extraction</span>
+          </button>
+
+          <div class="examples">
+            <button type="button" class="chip" data-url="https://wmh.org/site-map/">wmh.org / site-map</button>
+            <button type="button" class="chip" data-url="https://wordpress.org/sitemap/">wordpress.org / sitemap</button>
+            <button type="button" class="chip" data-url="https://flask.palletsprojects.com/">flask docs</button>
+          </div>
         </div>
 
         <div class="status" id="status"></div>
       </form>
-
-      <div class="results" id="results">
-        <div class="results-header">
-          <div class="stats">
-            <div class="stat">
-              <span class="stat-num grad" id="count">0</span>
-              <span class="stat-label">Internal links</span>
-            </div>
-            <div class="stat">
-              <span class="stat-num" id="domain" style="font-size:18px; padding-top:8px;">—</span>
-              <span class="stat-label">Domain</span>
-            </div>
-          </div>
-          <div class="actions">
-            <button class="btn btn-ghost" id="copy">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy
-            </button>
-            <button class="btn btn-ghost" id="download">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-              Download .txt
-            </button>
-          </div>
-        </div>
-        <div class="links-list" id="links-list"></div>
-      </div>
     </section>
 
-    <section class="features" id="features">
-      <div class="feature">
-        <div class="feature-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        </div>
-        <h3>Lightning fast</h3>
-        <p>One HTTP request, parsed with lxml. Hundreds of links in under a second.</p>
+    <!-- ===== MANIFEST / RESULTS ===== -->
+    <section class="manifest" id="manifest">
+      <div class="sec-head" style="margin-top:32px">
+        <div class="sec-num">§ 02</div>
+        <h2 class="sec-title">The manifest</h2>
+        <div class="sec-tag">Sorted alphabetically</div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+
+      <div class="manifest-meta">
+        <div class="stat">
+          <span class="stat-label">Links found</span>
+          <span class="stat-value accent" id="count">0</span>
         </div>
-        <h3>Same-domain only</h3>
-        <p>Filters out external links, mailto, tel, and javascript hrefs automatically.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        <div class="stat">
+          <span class="stat-label">Domain</span>
+          <span class="stat-value ital" id="domain">—</span>
         </div>
-        <h3>Export anywhere</h3>
-        <p>Copy to clipboard or download as a plain .txt file — one URL per line.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+        <div class="stat">
+          <span class="stat-label">Issued</span>
+          <span class="stat-value ital" id="issued">—</span>
         </div>
-        <h3>Runs locally</h3>
-        <p>Self-hosted Flask app. Your URLs never touch a third-party server.</p>
+        <div class="stat">
+          <span class="stat-label">Format</span>
+          <span class="stat-value ital">UTF-8 · text/plain</span>
+        </div>
       </div>
+
+      <div class="actions-bar">
+        <input type="text" id="filter" class="filter-input" placeholder="Filter the manifest…" />
+        <button class="ghost-btn" id="copy">⧉ Copy all</button>
+        <button class="ghost-btn accent" id="download">↓ Download .txt</button>
+      </div>
+
+      <div class="index" id="links-list"></div>
     </section>
 
-    <footer>
-      Made with Flask + ❤️ &nbsp;·&nbsp; <a href="https://github.com/AccessibilityChecker-org/sitemap-converter" target="_blank" rel="noopener">View source</a>
+    <!-- ===== COLOPHON ===== -->
+    <footer class="colophon">
+      <div>
+        <h4>Colophon</h4>
+        <p>Set in <em>Fraunces</em> (display & body) and <em>JetBrains Mono</em> (data). Printed on a localhost paper-stock of #f1ede4.</p>
+      </div>
+      <div>
+        <h4>Method</h4>
+        <p>Python · Flask · BeautifulSoup. The crawler issues a single GET, parses the DOM, and resolves all anchors against the supplied base URL.</p>
+      </div>
+      <div>
+        <h4>Provenance</h4>
+        <p>Built openly. The source lives at <a href="https://github.com/AccessibilityChecker-org/sitemap-converter" target="_blank" rel="noopener">github · sitemap-converter</a>.</p>
+      </div>
     </footer>
   </div>
 
   <div class="toast" id="toast"></div>
 
 <script>
-  const form     = document.getElementById('form');
-  const urlInput = document.getElementById('url');
-  const tInput   = document.getElementById('timeout');
-  const submit   = document.getElementById('submit');
-  const subLbl   = document.getElementById('submit-label');
-  const status   = document.getElementById('status');
-  const results  = document.getElementById('results');
-  const list     = document.getElementById('links-list');
-  const countEl  = document.getElementById('count');
-  const domEl    = document.getElementById('domain');
-  const toast    = document.getElementById('toast');
+  const form    = document.getElementById('form');
+  const urlInp  = document.getElementById('url');
+  const tInp    = document.getElementById('timeout');
+  const submit  = document.getElementById('submit');
+  const subLbl  = document.getElementById('submit-label');
+  const status  = document.getElementById('status');
+  const manifest= document.getElementById('manifest');
+  const list    = document.getElementById('links-list');
+  const countEl = document.getElementById('count');
+  const domEl   = document.getElementById('domain');
+  const issEl   = document.getElementById('issued');
+  const filter  = document.getElementById('filter');
+  const toast   = document.getElementById('toast');
+  const dateline= document.getElementById('dateline');
+
+  // Dateline in masthead
+  const now = new Date();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  dateline.textContent = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
 
   let lastLinks = [];
 
-  document.querySelectorAll('.chip').forEach(c => {
-    c.addEventListener('click', () => { urlInput.value = c.dataset.url; urlInput.focus(); });
-  });
+  document.querySelectorAll('.chip').forEach(c =>
+    c.addEventListener('click', () => { urlInp.value = c.dataset.url; urlInp.focus(); })
+  );
 
   function showStatus(kind, html) {
     status.className = 'status show ' + kind;
     status.innerHTML = html;
   }
-  function hideStatus() { status.className = 'status'; status.innerHTML = ''; }
-
   function showToast(msg) {
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(showToast._t);
     showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
   }
-
-  function animateCount(target) {
-    const dur = 600, start = performance.now();
+  function tick(target) {
+    const dur = 700, t0 = performance.now();
     function step(now) {
-      const p = Math.min(1, (now - start) / dur);
+      const p = Math.min(1, (now - t0) / dur);
       const eased = 1 - Math.pow(1 - p, 3);
-      countEl.textContent = Math.round(target * eased).toLocaleString();
+      countEl.textContent = String(Math.round(target * eased)).padStart(3, '0');
       if (p < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
+  }
+
+  function shortPath(href) {
+    try {
+      const u = new URL(href);
+      const p = (u.pathname + u.search).replace(/^\//, '');
+      return p || '(root)';
+    } catch { return href; }
   }
 
   function renderLinks(links) {
@@ -433,57 +706,67 @@
     const frag = document.createDocumentFragment();
     links.forEach((href, i) => {
       const row = document.createElement('div');
-      row.className = 'link-row';
+      row.className = 'row';
+      row.dataset.href = href.toLowerCase();
       row.innerHTML = `
-        <span class="link-num">${i + 1}</span>
-        <a href="${href}" target="_blank" rel="noopener">${href}</a>
-        <svg class="link-ext" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>
+        <span class="num">${String(i + 1).padStart(3, '0')}</span>
+        <a href="${href}" target="_blank" rel="noopener">${shortPath(href)}<span class="path"> · ${href.replace(/^https?:\/\//,'')}</span></a>
+        <span class="ext">open ↗</span>
       `;
       frag.appendChild(row);
     });
     list.appendChild(frag);
   }
 
+  filter.addEventListener('input', () => {
+    const q = filter.value.trim().toLowerCase();
+    document.querySelectorAll('.row').forEach(r => {
+      r.classList.toggle('hidden', q && !r.dataset.href.includes(q));
+    });
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = urlInput.value.trim();
+    const url = urlInp.value.trim();
     if (!url) return;
 
     submit.disabled = true;
-    subLbl.textContent = 'Crawling…';
-    results.classList.remove('show');
-    showStatus('loading', '<div class="spinner"></div><span>Fetching and parsing links…</span>');
+    subLbl.textContent = 'In progress…';
+    manifest.classList.remove('show');
+    showStatus('loading', '<span class="ticker"></span><span>Dispatching request to ' + url + ' …</span>');
 
     try {
       const res = await fetch('/api/convert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, timeout: parseInt(tInput.value, 10) || 30 }),
+        body: JSON.stringify({ url, timeout: parseInt(tInp.value, 10) || 30 }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        showStatus('error', `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>${data.error || 'Something went wrong.'}</span>`);
+        showStatus('error', '✕ &nbsp;' + (data.error || 'The request could not be completed.'));
       } else {
         lastLinks = data.links;
-        showStatus('success', `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Found <strong>${data.count}</strong> internal link${data.count===1?'':'s'}.</span>`);
+        showStatus('success', `✓ &nbsp;Manifest issued. <strong>${data.count}</strong> internal address${data.count===1?'':'es'} catalogued.`);
         try { domEl.textContent = new URL(data.url).hostname; } catch { domEl.textContent = '—'; }
+        const d = new Date();
+        issEl.textContent = `${d.toLocaleDateString(undefined,{month:'short',day:'numeric'})} · ${d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}`;
         renderLinks(data.links);
-        animateCount(data.count);
-        results.classList.add('show');
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        tick(data.count);
+        manifest.classList.add('show');
+        manifest.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } catch (err) {
-      showStatus('error', `<span>Network error: ${err.message}</span>`);
+      showStatus('error', '✕ &nbsp;Network error — ' + err.message);
     } finally {
       submit.disabled = false;
-      subLbl.textContent = 'Convert';
+      subLbl.textContent = 'Begin extraction';
     }
   });
 
   document.getElementById('copy').addEventListener('click', async () => {
     if (!lastLinks.length) return;
     await navigator.clipboard.writeText(lastLinks.join('\n'));
-    showToast(`Copied ${lastLinks.length} link${lastLinks.length===1?'':'s'} to clipboard`);
+    showToast(`✓ Copied ${lastLinks.length} link${lastLinks.length===1?'':'s'}`);
   });
 
   document.getElementById('download').addEventListener('click', async () => {
@@ -496,9 +779,9 @@
     const blob = await res.blob();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'sitemap-links.txt';
+    a.download = 'sitemap-manifest.txt';
     document.body.appendChild(a); a.click(); a.remove();
-    showToast('Downloaded sitemap-links.txt');
+    showToast('↓ Manifest downloaded');
   });
 </script>
 </body>
