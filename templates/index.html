@@ -650,7 +650,8 @@
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
       <div class="build">// ACE-SCANNER · BUILD.V1</div>
-      <div>Powered by Flask + BeautifulSoup · runs locally on your machine.</div>
+      <div>Client-side scanner · DOMParser + CORS proxy.</div>
+      <div>Runs entirely in your browser · no server required.</div>
       <div><a href="https://github.com/AccessibilityChecker-org/sitemap-converter" target="_blank" rel="noopener">github ↗</a></div>
     </footer>
   </div>
@@ -723,38 +724,100 @@
     });
   });
 
+  // CORS proxy fallbacks — tried in order. First to succeed wins.
+  const PROXIES = [
+    (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    (u) => `https://cors.isomorphic-git.org/${u}`,
+  ];
+
+  async function fetchWithTimeout(url, timeoutMs) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { signal: ctrl.signal, redirect: 'follow' });
+      return res;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function fetchHtml(url, timeoutSec) {
+    const errors = [];
+    for (const build of PROXIES) {
+      try {
+        const res = await fetchWithTimeout(build(url), timeoutSec * 1000);
+        if (!res.ok) { errors.push(`${res.status} via proxy`); continue; }
+        const text = await res.text();
+        if (text && text.length > 0) return text;
+        errors.push('empty response');
+      } catch (err) {
+        errors.push(err.name === 'AbortError' ? 'timeout' : err.message);
+      }
+    }
+    throw new Error('All proxies failed — ' + errors.join(' · '));
+  }
+
+  function extractLinks(html, baseUrl) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    // Give relative URL resolution a stable base.
+    const base = doc.createElement('base');
+    base.href = baseUrl;
+    doc.head.insertBefore(base, doc.head.firstChild);
+
+    const baseHost = new URL(baseUrl).hostname;
+    const found = new Set();
+
+    doc.querySelectorAll('a[href]').forEach(a => {
+      const raw = (a.getAttribute('href') || '').trim();
+      if (!raw) return;
+      if (/^(#|javascript:|mailto:|tel:)/i.test(raw)) return;
+      let abs;
+      try { abs = new URL(raw, baseUrl); } catch { return; }
+      if (abs.protocol !== 'http:' && abs.protocol !== 'https:') return;
+      if (abs.hostname !== baseHost) return;
+      abs.hash = '';
+      found.add(abs.toString());
+    });
+
+    return Array.from(found).sort();
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = urlInp.value.trim();
     if (!url) return;
+    let parsed;
+    try { parsed = new URL(url); } catch {
+      showLog('error', 'ERR', 'Invalid URL — include the protocol (https://).');
+      return;
+    }
+
+    const timeoutSec = Math.max(1, Math.min(120, parseInt(tInp.value, 10) || 30));
 
     submit.disabled = true;
     subLbl.textContent = 'SCANNING…';
     manifest.classList.remove('show');
-    showLog('loading', 'RUN', `Dispatching GET → ${url}`);
+    showLog('loading', 'RUN', `Fetching ${url} via CORS proxy…`);
 
     try {
-      const res = await fetch('/api/convert', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, timeout: parseInt(tInp.value, 10) || 30 }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        showLog('error', 'ERR', data.error || 'Request failed.');
+      const html = await fetchHtml(url, timeoutSec);
+      const links = extractLinks(html, url);
+      lastLinks = links;
+
+      if (!links.length) {
+        showLog('error', 'ERR', 'No same-domain links found on that page.');
       } else {
-        lastLinks = data.links;
-        showLog('success', 'OK', `Manifest issued — ${data.count} link${data.count===1?'':'s'} catalogued.`);
-        try { domEl.textContent = new URL(data.url).hostname; } catch { domEl.textContent = '—'; }
-        const d = new Date();
-        issEl.textContent = d.toISOString().replace('T',' ').slice(0,16) + 'Z';
-        renderLinks(data.links);
-        tick(data.count);
+        showLog('success', 'OK', `Manifest issued — ${links.length} link${links.length===1?'':'s'} catalogued.`);
+        domEl.textContent = parsed.hostname;
+        issEl.textContent = new Date().toISOString().replace('T',' ').slice(0,16) + 'Z';
+        renderLinks(links);
+        tick(links.length);
         manifest.classList.add('show');
         manifest.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } catch (err) {
-      showLog('error', 'ERR', 'Network error — ' + err.message);
+      showLog('error', 'ERR', err.message);
     } finally {
       submit.disabled = false;
       subLbl.textContent = 'RUN SCANNER';
@@ -767,18 +830,14 @@
     showToast(`✓ Copied ${lastLinks.length} link${lastLinks.length===1?'':'s'}`);
   });
 
-  document.getElementById('download').addEventListener('click', async () => {
+  document.getElementById('download').addEventListener('click', () => {
     if (!lastLinks.length) return;
-    const res = await fetch('/api/download', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ links: lastLinks }),
-    });
-    const blob = await res.blob();
+    const blob = new Blob([lastLinks.join('\n') + '\n'], { type: 'text/plain;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'sitemap-manifest.txt';
-    document.body.appendChild(a); a.click(); a.remove();
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
     showToast('↓ Downloaded sitemap-manifest.txt');
   });
 </script>
