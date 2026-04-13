@@ -9,12 +9,7 @@ function extractLinks(html, baseUrl) {
     if (!href) continue;
 
     const lower = href.toLowerCase();
-    if (
-      lower.startsWith("#") ||
-      lower.startsWith("javascript:") ||
-      lower.startsWith("mailto:") ||
-      lower.startsWith("tel:")
-    ) {
+    if (lower.startsWith("#")) {
       continue;
     }
 
