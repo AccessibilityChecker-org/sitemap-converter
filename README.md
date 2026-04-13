@@ -20,16 +20,17 @@ pip install -r requirements.txt
 ## Usage
 
 ```
-python sitemap_converter.py [-h] [-o FILE] [--timeout SECONDS] url
+python sitemap_converter.py [-h] [-o FILE] [--timeout SECONDS] [--gui] [url]
 ```
 
 ### Arguments
 
 | Argument | Description |
 |---|---|
-| `url` | URL of the WordPress visual sitemap page to crawl |
+| `url` | URL of the WordPress visual sitemap page to crawl (required in CLI mode) |
 | `-o FILE`, `--output FILE` | Path of the output `.txt` file (default: print to stdout) |
 | `--timeout SECONDS` | HTTP request timeout in seconds (default: `30`) |
+| `--gui` | Launch a desktop UI (Tkinter) instead of CLI mode |
 
 ### Examples
 
@@ -43,6 +44,18 @@ Save the links to a file:
 
 ```bash
 python sitemap_converter.py https://example.com/sitemap -o links.txt
+```
+
+Launch the desktop UI:
+
+```bash
+python sitemap_converter.py --gui
+```
+
+Launch the desktop UI with pre-filled values:
+
+```bash
+python sitemap_converter.py --gui https://example.com/sitemap -o links.txt --timeout 20
 ```
 
 The resulting `links.txt` will contain one URL per line, for example:
