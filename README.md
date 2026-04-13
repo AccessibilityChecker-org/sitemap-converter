@@ -1,25 +1,31 @@
 # sitemap-converter
 
-A command-line tool that crawls a WordPress visual sitemap page (HTML or PHP-rendered) and converts it into a plain-text file of links, one URL per line.
+A tool that crawls a WordPress visual sitemap page (HTML or PHP-rendered) and converts it into a plain-text file of links, one URL per line.
 
-Many WordPress sites expose their site structure through a visually styled sitemap page rather than a machine-readable XML sitemap. This tool fetches that page, extracts every internal link, deduplicates and sorts them, and writes the result to a `.txt` file (or prints them to stdout).
+It now includes:
+- A **CLI** mode (Python)
+- A **desktop GUI** mode (Tkinter)
+- A **web UI** built with **React.js** for Vercel deployment
+
+This is useful when a site does not expose a standard XML sitemap and you need a TXT file with one URL per line for the AccessibilityChecker.org dashboard scanner.
 
 ## Requirements
 
+### Python modes (CLI + Tkinter GUI)
 - Python 3.8+
 - [requests](https://pypi.org/project/requests/)
 - [beautifulsoup4](https://pypi.org/project/beautifulsoup4/)
 - [lxml](https://pypi.org/project/lxml/)
 
-Install dependencies:
+Install Python dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## CLI usage
 
-```
+```bash
 python sitemap_converter.py [-h] [-o FILE] [--timeout SECONDS] [--gui] [url]
 ```
 
@@ -32,7 +38,7 @@ python sitemap_converter.py [-h] [-o FILE] [--timeout SECONDS] [--gui] [url]
 | `--timeout SECONDS` | HTTP request timeout in seconds (default: `30`) |
 | `--gui` | Launch a desktop UI (Tkinter) instead of CLI mode |
 
-### Examples
+### CLI examples
 
 Print all internal links from a sitemap page to stdout:
 
@@ -46,21 +52,46 @@ Save the links to a file:
 python sitemap_converter.py https://example.com/sitemap -o links.txt
 ```
 
-Launch the desktop UI:
+Launch desktop UI:
 
 ```bash
 python sitemap_converter.py --gui
 ```
 
-Launch the desktop UI with pre-filled values:
+## React web UI (Vercel-ready)
+
+The web app provides:
+- URL input for sitemap page crawling
+- One-click conversion
+- Live TXT preview (`one URL per line`)
+- **Download TXT** button
+- Copy-to-clipboard for fast paste into the AccessibilityChecker dashboard scanner
+
+### Run locally
+
+Use Vercel CLI so the API and static frontend run together:
 
 ```bash
-python sitemap_converter.py --gui https://example.com/sitemap -o links.txt --timeout 20
+npx vercel dev
 ```
 
-The resulting `links.txt` will contain one URL per line, for example:
+Then open `http://localhost:3000`.
 
-```
+### Deploy to Vercel
+
+1. Import this repository in Vercel.
+2. Deploy with default settings.
+3. Vercel will serve:
+   - `index.html` + `app.js` + `styles.css` as the React frontend
+   - `api/convert.js` as the serverless conversion endpoint
+
+No extra build step is required.
+
+## Output format
+
+The generated TXT output always contains one URL per line:
+
+```txt
 https://example.com/about
 https://example.com/about/team
 https://example.com/contact
@@ -69,12 +100,11 @@ https://example.com/services
 
 ## How it works
 
-1. Fetches the given URL with a standard HTTP GET request.
-2. Parses the HTML response (including PHP-rendered pages served as HTML) with `BeautifulSoup`.
-3. Collects every `<a href="...">` element and resolves relative URLs against the base URL.
-4. Filters out external links, `javascript:`, `mailto:`, `tel:`, and bare fragment (`#`) links.
-5. Strips URL fragments, deduplicates, and sorts the remaining internal URLs.
-6. Writes the final list to the output file (or stdout), one URL per line.
+1. Fetches the provided sitemap page URL.
+2. Parses anchor tags and resolves relative links against the base URL.
+3. Keeps same-domain `http`/`https` links only.
+4. Excludes `javascript:`, `mailto:`, `tel:`, and fragment-only links.
+5. Removes fragments, deduplicates, sorts, and outputs one URL per line.
 
 ## Running tests
 

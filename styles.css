@@ -1,0 +1,154 @@
+:root {
+  color-scheme: light;
+  --bg: #070b17;
+  --card: rgba(14, 24, 46, 0.78);
+  --card-border: rgba(145, 179, 255, 0.22);
+  --text: #eaf1ff;
+  --muted: #b2c4ef;
+  --accent: #7da8ff;
+  --accent-strong: #4f7bf4;
+  --success: #1ec794;
+  --danger: #ff6f91;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(83, 130, 255, 0.28), transparent 35%),
+    radial-gradient(circle at 85% 0%, rgba(160, 102, 255, 0.22), transparent 30%),
+    linear-gradient(180deg, #060914 0%, #05070f 100%);
+  min-height: 100vh;
+}
+
+.app-shell {
+  width: min(960px, 92vw);
+  margin: 3rem auto;
+}
+
+.hero {
+  margin-bottom: 1.4rem;
+}
+
+.hero h1 {
+  font-size: clamp(1.9rem, 2.8vw, 2.6rem);
+  margin: 0 0 0.4rem;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.35);
+  padding: 1.3rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.9rem;
+}
+
+label {
+  display: block;
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid rgba(170, 199, 255, 0.24);
+  border-radius: 12px;
+  padding: 0.72rem 0.82rem;
+  color: var(--text);
+  background: rgba(4, 9, 20, 0.56);
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid rgba(125, 168, 255, 0.5);
+  outline-offset: 1px;
+}
+
+textarea {
+  min-height: 260px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 1rem 0 0;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 0.64rem 1rem;
+  color: white;
+  background: var(--accent-strong);
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+button:hover:enabled {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.54;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: rgba(122, 154, 236, 0.25);
+  border: 1px solid rgba(161, 188, 255, 0.28);
+}
+
+.status {
+  margin-top: 0.8rem;
+  min-height: 1.3rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.status.error {
+  color: var(--danger);
+}
+
+.status.success {
+  color: var(--success);
+}
+
+.meta {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
