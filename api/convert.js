@@ -67,7 +67,7 @@ export default async function handler(req, res) {
 
   const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
   const url = (body.url || "").trim();
-  const timeout = Number.parseInt(body.timeout || "30", 10);
+  const timeout = parseInt(body.timeout || "30", 10);
 
   if (!url) {
     return res.status(400).json({ error: "Please provide a sitemap URL." });
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "URL must use http or https." });
   }
 
-  if (!Number.isInteger(timeout) || timeout <= 0 || timeout > 120) {
+  if (Number.isNaN(timeout) || !Number.isInteger(timeout) || timeout <= 0 || timeout > 120) {
     return res
       .status(400)
       .json({ error: "Timeout must be a positive integer between 1 and 120." });
