@@ -244,21 +244,21 @@ export default function Page() {
     showToast(`✓ Copied ${links.length} link${links.length === 1 ? "" : "s"}`);
   };
 
-  const handleDownload = async () => {
+  const handleDownload = async (format: "txt" | "xml") => {
     if (!links.length) return;
     const res = await fetch("/api/download", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ links }),
+      body: JSON.stringify({ links, format }),
     });
     const blob = await res.blob();
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "sitemap-manifest.txt";
+    a.download = format === "xml" ? "sitemap.xml" : "sitemap-manifest.txt";
     document.body.appendChild(a);
     a.click();
     a.remove();
-    showToast("↓ Manifest downloaded");
+    showToast(format === "xml" ? "↓ sitemap.xml downloaded" : "↓ Manifest downloaded");
   };
 
   const paddedCount = String(finished ? animatedCount : links.length).padStart(
@@ -510,11 +510,18 @@ export default function Page() {
             ⧉ Copy all
           </button>
           <button
+            className="ghost-btn"
+            type="button"
+            onClick={() => handleDownload("txt")}
+          >
+            ↓ .txt
+          </button>
+          <button
             className="ghost-btn accent"
             type="button"
-            onClick={handleDownload}
+            onClick={() => handleDownload("xml")}
           >
-            ↓ Download .txt
+            ↓ sitemap.xml
           </button>
         </div>
 
