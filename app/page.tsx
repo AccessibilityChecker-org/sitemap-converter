@@ -328,31 +328,35 @@ export default function Page() {
         </div>
 
         <h1 className="hero-title">
-          Sitemap<span className="slash">//</span>Converter
+          HTML<span className="slash">→</span>XML
           <br />
-          for WordPress <span className="hl">Sites.</span>
+          Sitemap <span className="hl">Converter.</span>
         </h1>
 
         <p className="hero-lede">
-          Point it at any WordPress <strong>visual sitemap page</strong> — the kind of HTML index that doesn&apos;t ship an XML feed. It fetches, parses, and extracts every internal link in real time, then exports a clean <strong>sitemap.xml</strong> or plain-text list — ready to hand off to the <strong>ACE classifier</strong>.
+          Some websites don&apos;t have a machine-readable <strong>sitemap.xml</strong>. Instead, they list their pages on a regular HTML page — a visual &ldquo;site map&rdquo; built for humans, not crawlers. This tool reads that HTML page, extracts every internal link, and converts them into a proper <strong>sitemap.xml</strong> that the{" "}
+          <a href="https://accessibilitychecker.org" target="_blank" rel="noopener noreferrer" style={{ color: "var(--green-dark)", borderBottom: "1px solid var(--green)" }}>
+            AccessibilityChecker.org
+          </a>{" "}
+          scanner can understand.
         </p>
 
         <div className="stages">
           <div className={`stage ${stageClass("load")}`}>
             <span className="stage-num">Stage 01</span>
-            <span className="stage-name">Load</span>
+            <span className="stage-name">Fetch HTML</span>
           </div>
           <div className={`stage ${stageClass("fetch")}`}>
             <span className="stage-num">Stage 02</span>
-            <span className="stage-name">Fetch</span>
+            <span className="stage-name">Download</span>
           </div>
           <div className={`stage ${stageClass("extract")}`}>
             <span className="stage-num">Stage 03</span>
-            <span className="stage-name">Extract</span>
+            <span className="stage-name">Extract Links</span>
           </div>
           <div className={`stage ${stageClass("export")}`}>
             <span className="stage-num">Stage 04</span>
-            <span className="stage-name">Export</span>
+            <span className="stage-name">Export XML</span>
           </div>
         </div>
 
@@ -371,24 +375,22 @@ export default function Page() {
               </button>
             </div>
           </div>
-          <h2 className="card-title">Load Visual Sitemap</h2>
+          <h2 className="card-title">Paste the HTML Sitemap URL</h2>
 
           <div className="card-body">
             <form onSubmit={handleSubmit} autoComplete="off">
-              <div className="tabs">
-                <button type="button" className="tab active">
-                  <span className="tab-icon">⊕</span> Sitemap URL
-                </button>
-              </div>
+              <p className="hint" style={{ marginTop: 0, marginBottom: 16, fontSize: 12, lineHeight: 1.65 }}>
+                This is <strong>not</strong> for pages that already have a <code>sitemap.xml</code>. This is for sites where the sitemap is just a regular HTML page listing links — a <strong>visual site map</strong> made for people to browse, not for machines to parse. It might be at <code>/site-map/</code>, <code>/sitemap/</code>, <code>/pages/</code>, or just a big list of links on any page. Paste that URL below.
+              </p>
 
-              <label className="field-label">Sitemap source</label>
+              <label className="field-label">HTML page URL</label>
               <div className="input-row">
                 <input
                   className="text-input"
                   type="url"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="https://example.com/site-map/ or https://example.com/sitemap"
+                  placeholder="https://example.com/site-map/"
                   required
                 />
                 <button type="submit" className="btn primary" disabled={submitting}>
@@ -396,7 +398,7 @@ export default function Page() {
                 </button>
               </div>
               <p className="hint">
-                Paste the URL of any WordPress visual sitemap page (e.g. <code>/site-map/</code>, <code>/sitemap/</code>). The converter follows redirects and normalizes the host (so <code>example.com</code> and <code>www.example.com</code> count as the same site).
+                The converter fetches the page, finds every <code>&lt;a href&gt;</code> link on it that points to the same website, and turns them into a proper <code>sitemap.xml</code> you can upload to the ACE scanner. Redirects are followed automatically (<code>example.com</code> and <code>www.example.com</code> are treated as the same site).
               </p>
 
               <div className="btn-row" style={{ marginTop: 22 }}>
@@ -551,10 +553,9 @@ export default function Page() {
             <h2 className="card-title">Send to ACE Classifier</h2>
 
             <div className="card-body">
-              <p className="hint" style={{ fontSize: 12, marginBottom: 18 }}>
-                The classifier normally auto-discovers a site&apos;s <code>sitemap.xml</code>. When a WordPress site only exposes a visual HTML sitemap, run it through this converter first and hand off the extracted URL list.
-                <br />
-                Clicking below copies all <strong>{links.length}</strong> URLs to the clipboard and opens the ACE classifier — paste into the <strong>PASTE URLS</strong> tab.
+              <p className="hint" style={{ fontSize: 12, marginBottom: 18, lineHeight: 1.65 }}>
+                Now that the links have been extracted from the HTML page, you can send them straight to the{" "}
+                <strong>AccessibilityChecker.org scanner</strong> for a full accessibility audit. Clicking below opens the scanner and automatically loads all <strong>{links.length}</strong> URLs — no copy-pasting needed.
               </p>
               <div className="btn-row">
                 <button
@@ -578,17 +579,22 @@ export default function Page() {
 
         <footer className="colophon">
           <div>
-            <h4>Pipeline</h4>
-            <p>Next.js · React · cheerio.</p>
-            <p>Streaming NDJSON · per-byte progress · host-normalized (www-agnostic).</p>
+            <h4>What this is for</h4>
+            <p>Websites that don&apos;t have a machine-readable sitemap.xml — only an HTML page listing their pages for humans.</p>
+            <p>This tool reads that page and converts it into a proper sitemap.xml the ACE scanner can process.</p>
           </div>
           <div>
-            <h4>Output</h4>
-            <p>UTF-8 plain text, one URL per line.</p>
-            <p>Sitemap XML per sitemaps.org schema (loc + lastmod).</p>
+            <h4>What this is NOT for</h4>
+            <p>Sites that already have /sitemap.xml — the ACE scanner can read those directly. No conversion needed.</p>
           </div>
           <div>
-            <h4>Provenance</h4>
+            <h4>Links</h4>
+            <p>
+              Scanner ·{" "}
+              <a href={CLASSIFIER_URL} target="_blank" rel="noopener noreferrer">
+                ACE Sitemap Scanner
+              </a>
+            </p>
             <p>
               Source ·{" "}
               <a
@@ -596,13 +602,7 @@ export default function Page() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                github / sitemap-converter
-              </a>
-            </p>
-            <p>
-              Sibling ·{" "}
-              <a href={CLASSIFIER_URL} target="_blank" rel="noopener noreferrer">
-                ace-sitemap-page-classifier
+                GitHub
               </a>
             </p>
           </div>
