@@ -1,0 +1,478 @@
+{
+  "nodes": [
+    {
+      "id": "sitemap_converter_convert_sitemap",
+      "label": "convert_sitemap() - Core Conversion Function",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 53",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sitemap_converter_fetch_page",
+      "label": "fetch_page() - HTTP Fetcher",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sitemap_converter_extract_links",
+      "label": "extract_links() - HTML Link Extractor (BeautifulSoup)",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sitemap_converter_launch_gui",
+      "label": "launch_gui() - Tkinter Desktop UI",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 75",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sitemap_converter_main",
+      "label": "main() - CLI Entry Point",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 400",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app_flask_api_convert",
+      "label": "Flask POST /api/convert Endpoint",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "line 23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app_flask_api_download",
+      "label": "Flask POST /api/download Endpoint",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "line 54",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app_flask_index",
+      "label": "Flask GET / Index Route",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "line 18",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "route_nextjs_api_convert",
+      "label": "Next.js POST /api/convert Route (Streaming NDJSON)",
+      "file_type": "code",
+      "source_file": "app/api/convert/route.ts",
+      "source_location": "line 15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "route_nextjs_api_download",
+      "label": "Next.js POST /api/download Route (TXT + XML)",
+      "file_type": "code",
+      "source_file": "app/api/download/route.ts",
+      "source_location": "line 25",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "page_nextjs_ui",
+      "label": "Next.js React Page - The Cartographer UI",
+      "file_type": "code",
+      "source_file": "app/page.tsx",
+      "source_location": "line 34",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "layout_nextjs",
+      "label": "Next.js Root Layout",
+      "file_type": "code",
+      "source_file": "app/layout.tsx",
+      "source_location": "line 10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_extract_links",
+      "label": "TestExtractLinks - Unit Tests for extract_links()",
+      "file_type": "code",
+      "source_file": "tests/test_sitemap_converter.py",
+      "source_location": "line 15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_convert_sitemap",
+      "label": "TestConvertSitemap - Unit Tests for convert_sitemap()",
+      "file_type": "code",
+      "source_file": "tests/test_sitemap_converter.py",
+      "source_location": "line 106",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_tool_description",
+      "label": "README - Tool Description and Usage",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_how_it_works",
+      "label": "README - How It Works (6-step pipeline)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 70",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wmh_sitemap_sample",
+      "label": "WMH Hospital Sitemap - Sample Output Data",
+      "file_type": "document",
+      "source_file": "wmh-sitemap.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_same_domain_filtering",
+      "label": "Same-Domain Link Filtering Pattern",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_streaming_ndjson",
+      "label": "Streaming NDJSON Response Pattern",
+      "file_type": "code",
+      "source_file": "app/api/convert/route.ts",
+      "source_location": "line 22",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "route_nextjs_build_xml",
+      "label": "buildXml() - Sitemap XML Generator",
+      "file_type": "code",
+      "source_file": "app/api/download/route.ts",
+      "source_location": "line 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "sitemap_converter_fetch_page",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 61",
+      "weight": 1.0
+    },
+    {
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "sitemap_converter_extract_links",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 62",
+      "weight": 1.0
+    },
+    {
+      "source": "sitemap_converter_main",
+      "target": "sitemap_converter_convert_sitemap",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 444",
+      "weight": 1.0
+    },
+    {
+      "source": "sitemap_converter_main",
+      "target": "sitemap_converter_launch_gui",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 433",
+      "weight": 0.8
+    },
+    {
+      "source": "sitemap_converter_launch_gui",
+      "target": "sitemap_converter_convert_sitemap",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 363",
+      "weight": 1.0
+    },
+    {
+      "source": "app_flask_api_convert",
+      "target": "sitemap_converter_convert_sitemap",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app.py",
+      "source_location": "line 45",
+      "weight": 1.0
+    },
+    {
+      "source": "page_nextjs_ui",
+      "target": "route_nextjs_api_convert",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/page.tsx",
+      "source_location": "line 134",
+      "weight": 1.0
+    },
+    {
+      "source": "page_nextjs_ui",
+      "target": "route_nextjs_api_download",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/page.tsx",
+      "source_location": "line 253",
+      "weight": 1.0
+    },
+    {
+      "source": "test_extract_links",
+      "target": "sitemap_converter_extract_links",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_sitemap_converter.py",
+      "source_location": "line 18",
+      "weight": 1.0
+    },
+    {
+      "source": "test_convert_sitemap",
+      "target": "sitemap_converter_convert_sitemap",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_sitemap_converter.py",
+      "source_location": "line 114",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_how_it_works",
+      "target": "sitemap_converter_convert_sitemap",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": "line 70",
+      "weight": 0.8
+    },
+    {
+      "source": "wmh_sitemap_sample",
+      "target": "sitemap_converter_convert_sitemap",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "wmh-sitemap.txt",
+      "source_location": null,
+      "weight": 0.7
+    },
+    {
+      "source": "app_flask_api_convert",
+      "target": "route_nextjs_api_convert",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.92,
+      "source_file": "app.py",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "app_flask_api_download",
+      "target": "route_nextjs_api_download",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "app.py",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "app_flask_index",
+      "target": "page_nextjs_ui",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.82,
+      "source_file": "app.py",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "sitemap_converter_extract_links",
+      "target": "route_nextjs_api_convert",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "sitemap_converter.py",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sitemap_converter_launch_gui",
+      "target": "page_nextjs_ui",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.78,
+      "source_file": "sitemap_converter.py",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "concept_same_domain_filtering",
+      "target": "route_nextjs_api_convert",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.93,
+      "source_file": "app/api/convert/route.ts",
+      "source_location": "line 149",
+      "weight": 1.0
+    },
+    {
+      "source": "route_nextjs_api_download",
+      "target": "route_nextjs_build_xml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/download/route.ts",
+      "source_location": "line 38",
+      "weight": 1.0
+    },
+    {
+      "source": "concept_same_domain_filtering",
+      "target": "sitemap_converter_extract_links",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 46",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "python_stack",
+      "label": "Python Implementation Stack (CLI + Flask + Tkinter)",
+      "nodes": [
+        "sitemap_converter_convert_sitemap",
+        "sitemap_converter_fetch_page",
+        "sitemap_converter_extract_links",
+        "sitemap_converter_main",
+        "sitemap_converter_launch_gui",
+        "app_flask_api_convert",
+        "app_flask_api_download",
+        "app_flask_index"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "sitemap_converter.py"
+    },
+    {
+      "id": "nextjs_stack",
+      "label": "Next.js Implementation Stack (React + API Routes)",
+      "nodes": [
+        "page_nextjs_ui",
+        "layout_nextjs",
+        "route_nextjs_api_convert",
+        "route_nextjs_api_download",
+        "route_nextjs_build_xml",
+        "concept_streaming_ndjson"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "app/page.tsx"
+    },
+    {
+      "id": "convert_request_flow",
+      "label": "Conversion Request Flow (UI -> API -> Parse -> Return Links)",
+      "nodes": [
+        "page_nextjs_ui",
+        "route_nextjs_api_convert",
+        "concept_same_domain_filtering",
+        "concept_streaming_ndjson"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "app/api/convert/route.ts"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

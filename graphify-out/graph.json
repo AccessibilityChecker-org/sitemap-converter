@@ -1,0 +1,1706 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "python_stack",
+        "label": "Python Implementation Stack (CLI + Flask + Tkinter)",
+        "nodes": [
+          "sitemap_converter_convert_sitemap",
+          "sitemap_converter_fetch_page",
+          "sitemap_converter_extract_links",
+          "sitemap_converter_main",
+          "sitemap_converter_launch_gui",
+          "app_flask_api_convert",
+          "app_flask_api_download",
+          "app_flask_index"
+        ],
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.95,
+        "source_file": "sitemap_converter.py"
+      },
+      {
+        "id": "nextjs_stack",
+        "label": "Next.js Implementation Stack (React + API Routes)",
+        "nodes": [
+          "page_nextjs_ui",
+          "layout_nextjs",
+          "route_nextjs_api_convert",
+          "route_nextjs_api_download",
+          "route_nextjs_build_xml",
+          "concept_streaming_ndjson"
+        ],
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.95,
+        "source_file": "app/page.tsx"
+      },
+      {
+        "id": "convert_request_flow",
+        "label": "Conversion Request Flow (UI -> API -> Parse -> Return Links)",
+        "nodes": [
+          "page_nextjs_ui",
+          "route_nextjs_api_convert",
+          "concept_same_domain_filtering",
+          "concept_streaming_ndjson"
+        ],
+        "relation": "participate_in",
+        "confidence": "INFERRED",
+        "confidence_score": 0.88,
+        "source_file": "app/api/convert/route.ts"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "app.py",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L1",
+      "id": "app",
+      "community": 0
+    },
+    {
+      "label": "index()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L19",
+      "id": "app_index",
+      "community": 0
+    },
+    {
+      "label": "api_convert()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L24",
+      "id": "app_api_convert",
+      "community": 0
+    },
+    {
+      "label": "api_download()",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "L55",
+      "id": "app_api_download",
+      "community": 0
+    },
+    {
+      "label": "next-env.d.ts",
+      "file_type": "code",
+      "source_file": "next-env.d.ts",
+      "source_location": "L1",
+      "id": "next_env_d",
+      "community": 7
+    },
+    {
+      "label": "sitemap_converter.py",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L1",
+      "id": "sitemap_converter",
+      "community": 0
+    },
+    {
+      "label": "fetch_page()",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L15",
+      "id": "sitemap_converter_fetch_page",
+      "community": 0
+    },
+    {
+      "label": "extract_links()",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L23",
+      "id": "sitemap_converter_extract_links",
+      "community": 3
+    },
+    {
+      "label": "convert_sitemap()",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L53",
+      "id": "sitemap_converter_convert_sitemap",
+      "community": 0
+    },
+    {
+      "label": "launch_gui()",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L75",
+      "id": "sitemap_converter_launch_gui",
+      "community": 0
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L400",
+      "id": "sitemap_converter_main",
+      "community": 0
+    },
+    {
+      "label": "Fetch the HTML content of *url* and return it as a string.",
+      "file_type": "rationale",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L16",
+      "id": "sitemap_converter_rationale_16",
+      "community": 0
+    },
+    {
+      "label": "Return a sorted list of unique internal links found in *html*.      Only ``htt",
+      "file_type": "rationale",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L24",
+      "id": "sitemap_converter_rationale_24",
+      "community": 3
+    },
+    {
+      "label": "Fetch *url*, extract internal links, and optionally write to *output_file*.",
+      "file_type": "rationale",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L54",
+      "id": "sitemap_converter_rationale_54",
+      "community": 0
+    },
+    {
+      "label": "Launch a polished desktop GUI for sitemap conversion.",
+      "file_type": "rationale",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L76",
+      "id": "sitemap_converter_rationale_76",
+      "community": 0
+    },
+    {
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L1",
+      "id": "layout",
+      "community": 6
+    },
+    {
+      "label": "RootLayout()",
+      "file_type": "code",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L10",
+      "id": "layout_rootlayout",
+      "community": 6
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L1",
+      "id": "page",
+      "community": 2
+    },
+    {
+      "label": "shortPath()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L18",
+      "id": "page_shortpath",
+      "community": 2
+    },
+    {
+      "label": "formatBytes()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L28",
+      "id": "page_formatbytes",
+      "community": 2
+    },
+    {
+      "label": "tick()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L75",
+      "id": "page_tick",
+      "community": 2
+    },
+    {
+      "label": "showToast()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L92",
+      "id": "page_showtoast",
+      "community": 2
+    },
+    {
+      "label": "appendLog()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L98",
+      "id": "page_appendlog",
+      "community": 2
+    },
+    {
+      "label": "resetRun()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L111",
+      "id": "page_resetrun",
+      "community": 2
+    },
+    {
+      "label": "handleSubmit()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L123",
+      "id": "page_handlesubmit",
+      "community": 2
+    },
+    {
+      "label": "handleEvent()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L183",
+      "id": "page_handleevent",
+      "community": 2
+    },
+    {
+      "label": "handleCopy()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L245",
+      "id": "page_handlecopy",
+      "community": 2
+    },
+    {
+      "label": "handleDownload()",
+      "file_type": "code",
+      "source_file": "app\\page.tsx",
+      "source_location": "L251",
+      "id": "page_handledownload",
+      "community": 2
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "app\\api\\download\\route.ts",
+      "source_location": "L1",
+      "id": "route",
+      "community": 5
+    },
+    {
+      "label": "normalizeHost()",
+      "file_type": "code",
+      "source_file": "app\\api\\convert\\route.ts",
+      "source_location": "L13",
+      "id": "route_normalizehost",
+      "community": 5
+    },
+    {
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\download\\route.ts",
+      "source_location": "L25",
+      "id": "route_post",
+      "community": 5
+    },
+    {
+      "label": "escapeXml()",
+      "file_type": "code",
+      "source_file": "app\\api\\download\\route.ts",
+      "source_location": "L5",
+      "id": "route_escapexml",
+      "community": 5
+    },
+    {
+      "label": "buildXml()",
+      "file_type": "code",
+      "source_file": "app\\api\\download\\route.ts",
+      "source_location": "L14",
+      "id": "route_buildxml",
+      "community": 5
+    },
+    {
+      "label": "test_sitemap_converter.py",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L1",
+      "id": "test_sitemap_converter",
+      "community": 4
+    },
+    {
+      "label": "TestExtractLinks",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L15",
+      "id": "test_sitemap_converter_testextractlinks",
+      "community": 1
+    },
+    {
+      "label": ".test_relative_links_resolved()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L18",
+      "id": "test_sitemap_converter_testextractlinks_test_relative_links_resolved",
+      "community": 1
+    },
+    {
+      "label": ".test_absolute_internal_links_included()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L24",
+      "id": "test_sitemap_converter_testextractlinks_test_absolute_internal_links_included",
+      "community": 1
+    },
+    {
+      "label": ".test_external_links_excluded()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L29",
+      "id": "test_sitemap_converter_testextractlinks_test_external_links_excluded",
+      "community": 1
+    },
+    {
+      "label": ".test_javascript_links_excluded()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L38",
+      "id": "test_sitemap_converter_testextractlinks_test_javascript_links_excluded",
+      "community": 1
+    },
+    {
+      "label": ".test_mailto_links_excluded()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L43",
+      "id": "test_sitemap_converter_testextractlinks_test_mailto_links_excluded",
+      "community": 1
+    },
+    {
+      "label": ".test_tel_links_excluded()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L48",
+      "id": "test_sitemap_converter_testextractlinks_test_tel_links_excluded",
+      "community": 1
+    },
+    {
+      "label": ".test_anchor_only_links_excluded()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L53",
+      "id": "test_sitemap_converter_testextractlinks_test_anchor_only_links_excluded",
+      "community": 1
+    },
+    {
+      "label": ".test_url_fragments_stripped()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L58",
+      "id": "test_sitemap_converter_testextractlinks_test_url_fragments_stripped",
+      "community": 1
+    },
+    {
+      "label": ".test_deduplicates_links()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L63",
+      "id": "test_sitemap_converter_testextractlinks_test_deduplicates_links",
+      "community": 1
+    },
+    {
+      "label": ".test_links_sorted()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L68",
+      "id": "test_sitemap_converter_testextractlinks_test_links_sorted",
+      "community": 1
+    },
+    {
+      "label": ".test_empty_page_returns_empty_list()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L73",
+      "id": "test_sitemap_converter_testextractlinks_test_empty_page_returns_empty_list",
+      "community": 1
+    },
+    {
+      "label": ".test_wordpress_sitemap_like_structure()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L78",
+      "id": "test_sitemap_converter_testextractlinks_test_wordpress_sitemap_like_structure",
+      "community": 1
+    },
+    {
+      "label": "TestConvertSitemap",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L106",
+      "id": "test_sitemap_converter_testconvertsitemap",
+      "community": 4
+    },
+    {
+      "label": "test_returns_links()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L110",
+      "id": "test_sitemap_converter_test_returns_links",
+      "community": 4
+    },
+    {
+      "label": "test_writes_to_file()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L119",
+      "id": "test_sitemap_converter_test_writes_to_file",
+      "community": 4
+    },
+    {
+      "label": "test_output_file_one_link_per_line()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L134",
+      "id": "test_sitemap_converter_test_output_file_one_link_per_line",
+      "community": 4
+    },
+    {
+      "label": "test_empty_sitemap_page()",
+      "file_type": "code",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L155",
+      "id": "test_sitemap_converter_test_empty_sitemap_page",
+      "community": 4
+    },
+    {
+      "label": "Unit tests for sitemap_converter.",
+      "file_type": "rationale",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L1",
+      "id": "test_sitemap_converter_rationale_1",
+      "community": 4
+    },
+    {
+      "label": "Tests for the extract_links() helper.",
+      "file_type": "rationale",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L16",
+      "id": "test_sitemap_converter_rationale_16",
+      "community": 1
+    },
+    {
+      "label": "Simulate a typical WordPress visual sitemap page.",
+      "file_type": "rationale",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L79",
+      "id": "test_sitemap_converter_rationale_79",
+      "community": 1
+    },
+    {
+      "label": "Tests for the convert_sitemap() function.",
+      "file_type": "rationale",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L107",
+      "id": "test_sitemap_converter_rationale_107",
+      "community": 4
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "tests\\__init__.py",
+      "source_location": "L1",
+      "id": "init",
+      "community": 8
+    },
+    {
+      "label": "Flask POST /api/convert Endpoint",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "line 23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "app_flask_api_convert",
+      "community": 3
+    },
+    {
+      "label": "Flask POST /api/download Endpoint",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "line 54",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "app_flask_api_download",
+      "community": 3
+    },
+    {
+      "label": "Flask GET / Index Route",
+      "file_type": "code",
+      "source_file": "app.py",
+      "source_location": "line 18",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "app_flask_index",
+      "community": 3
+    },
+    {
+      "label": "Next.js POST /api/convert Route (Streaming NDJSON)",
+      "file_type": "code",
+      "source_file": "app/api/convert/route.ts",
+      "source_location": "line 15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_nextjs_api_convert",
+      "community": 3
+    },
+    {
+      "label": "Next.js POST /api/download Route (TXT + XML)",
+      "file_type": "code",
+      "source_file": "app/api/download/route.ts",
+      "source_location": "line 25",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_nextjs_api_download",
+      "community": 3
+    },
+    {
+      "label": "Next.js React Page - The Cartographer UI",
+      "file_type": "code",
+      "source_file": "app/page.tsx",
+      "source_location": "line 34",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "page_nextjs_ui",
+      "community": 3
+    },
+    {
+      "label": "Next.js Root Layout",
+      "file_type": "code",
+      "source_file": "app/layout.tsx",
+      "source_location": "line 10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "layout_nextjs",
+      "community": 9
+    },
+    {
+      "label": "TestExtractLinks - Unit Tests for extract_links()",
+      "file_type": "code",
+      "source_file": "tests/test_sitemap_converter.py",
+      "source_location": "line 15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "test_extract_links",
+      "community": 3
+    },
+    {
+      "label": "TestConvertSitemap - Unit Tests for convert_sitemap()",
+      "file_type": "code",
+      "source_file": "tests/test_sitemap_converter.py",
+      "source_location": "line 106",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "test_convert_sitemap",
+      "community": 0
+    },
+    {
+      "label": "README - Tool Description and Usage",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_tool_description",
+      "community": 10
+    },
+    {
+      "label": "README - How It Works (6-step pipeline)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 70",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_how_it_works",
+      "community": 0
+    },
+    {
+      "label": "WMH Hospital Sitemap - Sample Output Data",
+      "file_type": "document",
+      "source_file": "wmh-sitemap.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "wmh_sitemap_sample",
+      "community": 0
+    },
+    {
+      "label": "Same-Domain Link Filtering Pattern",
+      "file_type": "code",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_same_domain_filtering",
+      "community": 3
+    },
+    {
+      "label": "Streaming NDJSON Response Pattern",
+      "file_type": "code",
+      "source_file": "app/api/convert/route.ts",
+      "source_location": "line 22",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_streaming_ndjson",
+      "community": 11
+    },
+    {
+      "label": "buildXml() - Sitemap XML Generator",
+      "file_type": "code",
+      "source_file": "app/api/download/route.ts",
+      "source_location": "line 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_nextjs_build_xml",
+      "community": 3
+    }
+  ],
+  "links": [
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "sitemap_converter",
+      "source": "app",
+      "target": "sitemap_converter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_index",
+      "source": "app",
+      "target": "app_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_api_convert",
+      "source": "app",
+      "target": "app_api_convert",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_src": "app",
+      "_tgt": "app_api_download",
+      "source": "app",
+      "target": "app_api_download",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "sitemap_converter",
+      "_tgt": "sitemap_converter_fetch_page",
+      "source": "sitemap_converter",
+      "target": "sitemap_converter_fetch_page",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_src": "sitemap_converter",
+      "_tgt": "sitemap_converter_extract_links",
+      "source": "sitemap_converter",
+      "target": "sitemap_converter_extract_links",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_src": "sitemap_converter",
+      "_tgt": "sitemap_converter_convert_sitemap",
+      "source": "sitemap_converter",
+      "target": "sitemap_converter_convert_sitemap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_src": "sitemap_converter",
+      "_tgt": "sitemap_converter_launch_gui",
+      "source": "sitemap_converter",
+      "target": "sitemap_converter_launch_gui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L400",
+      "weight": 1.0,
+      "_src": "sitemap_converter",
+      "_tgt": "sitemap_converter_main",
+      "source": "sitemap_converter",
+      "target": "sitemap_converter_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter",
+      "_tgt": "sitemap_converter",
+      "source": "sitemap_converter",
+      "target": "test_sitemap_converter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 61",
+      "weight": 1.0,
+      "_src": "sitemap_converter_convert_sitemap",
+      "_tgt": "sitemap_converter_fetch_page",
+      "confidence_score": 1.0,
+      "source": "sitemap_converter_fetch_page",
+      "target": "sitemap_converter_convert_sitemap"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "sitemap_converter_rationale_16",
+      "_tgt": "sitemap_converter_fetch_page",
+      "source": "sitemap_converter_fetch_page",
+      "target": "sitemap_converter_rationale_16",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 62",
+      "weight": 1.0,
+      "_src": "sitemap_converter_convert_sitemap",
+      "_tgt": "sitemap_converter_extract_links",
+      "confidence_score": 1.0,
+      "source": "sitemap_converter_extract_links",
+      "target": "sitemap_converter_convert_sitemap"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_src": "sitemap_converter_rationale_24",
+      "_tgt": "sitemap_converter_extract_links",
+      "source": "sitemap_converter_extract_links",
+      "target": "sitemap_converter_rationale_24",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_sitemap_converter.py",
+      "source_location": "line 18",
+      "weight": 1.0,
+      "_src": "test_extract_links",
+      "_tgt": "sitemap_converter_extract_links",
+      "source": "sitemap_converter_extract_links",
+      "target": "test_extract_links"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "sitemap_converter.py",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "sitemap_converter_extract_links",
+      "_tgt": "route_nextjs_api_convert",
+      "source": "sitemap_converter_extract_links",
+      "target": "route_nextjs_api_convert"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 46",
+      "weight": 1.0,
+      "_src": "concept_same_domain_filtering",
+      "_tgt": "sitemap_converter_extract_links",
+      "source": "sitemap_converter_extract_links",
+      "target": "concept_same_domain_filtering"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 444",
+      "weight": 1.0,
+      "_src": "sitemap_converter_main",
+      "_tgt": "sitemap_converter_convert_sitemap",
+      "confidence_score": 1.0,
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "sitemap_converter_main"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_src": "sitemap_converter_rationale_54",
+      "_tgt": "sitemap_converter_convert_sitemap",
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "sitemap_converter_rationale_54",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 363",
+      "weight": 1.0,
+      "_src": "sitemap_converter_launch_gui",
+      "_tgt": "sitemap_converter_convert_sitemap",
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "sitemap_converter_launch_gui"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app.py",
+      "source_location": "line 45",
+      "weight": 1.0,
+      "_src": "app_flask_api_convert",
+      "_tgt": "sitemap_converter_convert_sitemap",
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "app_flask_api_convert"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_sitemap_converter.py",
+      "source_location": "line 114",
+      "weight": 1.0,
+      "_src": "test_convert_sitemap",
+      "_tgt": "sitemap_converter_convert_sitemap",
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "test_convert_sitemap"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": "line 70",
+      "weight": 0.8,
+      "_src": "readme_how_it_works",
+      "_tgt": "sitemap_converter_convert_sitemap",
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "readme_how_it_works"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "wmh-sitemap.txt",
+      "source_location": null,
+      "weight": 0.7,
+      "_src": "wmh_sitemap_sample",
+      "_tgt": "sitemap_converter_convert_sitemap",
+      "source": "sitemap_converter_convert_sitemap",
+      "target": "wmh_sitemap_sample"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "line 433",
+      "weight": 0.8,
+      "_src": "sitemap_converter_main",
+      "_tgt": "sitemap_converter_launch_gui",
+      "confidence_score": 1.0,
+      "source": "sitemap_converter_launch_gui",
+      "target": "sitemap_converter_main"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "sitemap_converter.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_src": "sitemap_converter_rationale_76",
+      "_tgt": "sitemap_converter_launch_gui",
+      "source": "sitemap_converter_launch_gui",
+      "target": "sitemap_converter_rationale_76",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.78,
+      "source_file": "sitemap_converter.py",
+      "source_location": null,
+      "weight": 0.8,
+      "_src": "sitemap_converter_launch_gui",
+      "_tgt": "page_nextjs_ui",
+      "source": "sitemap_converter_launch_gui",
+      "target": "page_nextjs_ui"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_src": "layout",
+      "_tgt": "layout_rootlayout",
+      "source": "layout",
+      "target": "layout_rootlayout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_shortpath",
+      "source": "page",
+      "target": "page_shortpath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_formatbytes",
+      "source": "page",
+      "target": "page_formatbytes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_tick",
+      "source": "page",
+      "target": "page_tick",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L92",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_showtoast",
+      "source": "page",
+      "target": "page_showtoast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_appendlog",
+      "source": "page",
+      "target": "page_appendlog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_resetrun",
+      "source": "page",
+      "target": "page_resetrun",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_handlesubmit",
+      "source": "page",
+      "target": "page_handlesubmit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L183",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_handleevent",
+      "source": "page",
+      "target": "page_handleevent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L245",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_handlecopy",
+      "source": "page",
+      "target": "page_handlecopy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L251",
+      "weight": 1.0,
+      "_src": "page",
+      "_tgt": "page_handledownload",
+      "source": "page",
+      "target": "page_handledownload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L198",
+      "weight": 1.0,
+      "_src": "page_handleevent",
+      "_tgt": "page_formatbytes",
+      "source": "page_formatbytes",
+      "target": "page_handleevent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L225",
+      "weight": 1.0,
+      "_src": "page_handleevent",
+      "_tgt": "page_showtoast",
+      "source": "page_showtoast",
+      "target": "page_handleevent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L248",
+      "weight": 1.0,
+      "_src": "page_handlecopy",
+      "_tgt": "page_showtoast",
+      "source": "page_showtoast",
+      "target": "page_handlecopy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L265",
+      "weight": 1.0,
+      "_src": "page_handledownload",
+      "_tgt": "page_showtoast",
+      "source": "page_showtoast",
+      "target": "page_handledownload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L130",
+      "weight": 1.0,
+      "_src": "page_handlesubmit",
+      "_tgt": "page_appendlog",
+      "source": "page_appendlog",
+      "target": "page_handlesubmit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L187",
+      "weight": 1.0,
+      "_src": "page_handleevent",
+      "_tgt": "page_appendlog",
+      "source": "page_appendlog",
+      "target": "page_handleevent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_src": "page_handlesubmit",
+      "_tgt": "page_resetrun",
+      "source": "page_resetrun",
+      "target": "page_handlesubmit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.tsx",
+      "source_location": "L164",
+      "weight": 1.0,
+      "_src": "page_handlesubmit",
+      "_tgt": "page_handleevent",
+      "source": "page_handlesubmit",
+      "target": "page_handleevent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\convert\\route.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_src": "route",
+      "_tgt": "route_normalizehost",
+      "source": "route",
+      "target": "route_normalizehost",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\download\\route.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_src": "route",
+      "_tgt": "route_post",
+      "source": "route",
+      "target": "route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\download\\route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "route",
+      "_tgt": "route_escapexml",
+      "source": "route",
+      "target": "route_escapexml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\download\\route.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_src": "route",
+      "_tgt": "route_buildxml",
+      "source": "route",
+      "target": "route_buildxml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\download\\route.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "route_buildxml",
+      "source": "route_post",
+      "target": "route_buildxml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter",
+      "_tgt": "test_sitemap_converter_testextractlinks",
+      "source": "test_sitemap_converter",
+      "target": "test_sitemap_converter_testextractlinks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter",
+      "_tgt": "test_sitemap_converter_testconvertsitemap",
+      "source": "test_sitemap_converter",
+      "target": "test_sitemap_converter_testconvertsitemap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L110",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter",
+      "_tgt": "test_sitemap_converter_test_returns_links",
+      "source": "test_sitemap_converter",
+      "target": "test_sitemap_converter_test_returns_links",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L119",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter",
+      "_tgt": "test_sitemap_converter_test_writes_to_file",
+      "source": "test_sitemap_converter",
+      "target": "test_sitemap_converter_test_writes_to_file",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L134",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter",
+      "_tgt": "test_sitemap_converter_test_output_file_one_link_per_line",
+      "source": "test_sitemap_converter",
+      "target": "test_sitemap_converter_test_output_file_one_link_per_line",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L155",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter",
+      "_tgt": "test_sitemap_converter_test_empty_sitemap_page",
+      "source": "test_sitemap_converter",
+      "target": "test_sitemap_converter_test_empty_sitemap_page",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_rationale_1",
+      "_tgt": "test_sitemap_converter",
+      "source": "test_sitemap_converter",
+      "target": "test_sitemap_converter_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_relative_links_resolved",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_relative_links_resolved",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_absolute_internal_links_included",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_absolute_internal_links_included",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_external_links_excluded",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_external_links_excluded",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_javascript_links_excluded",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_javascript_links_excluded",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_mailto_links_excluded",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_mailto_links_excluded",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_tel_links_excluded",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_tel_links_excluded",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_anchor_only_links_excluded",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_anchor_only_links_excluded",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_url_fragments_stripped",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_url_fragments_stripped",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_deduplicates_links",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_deduplicates_links",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_links_sorted",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_links_sorted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_empty_page_returns_empty_list",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_empty_page_returns_empty_list",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_testextractlinks",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_wordpress_sitemap_like_structure",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_testextractlinks_test_wordpress_sitemap_like_structure",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_rationale_16",
+      "_tgt": "test_sitemap_converter_testextractlinks",
+      "source": "test_sitemap_converter_testextractlinks",
+      "target": "test_sitemap_converter_rationale_16",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_rationale_79",
+      "_tgt": "test_sitemap_converter_testextractlinks_test_wordpress_sitemap_like_structure",
+      "source": "test_sitemap_converter_testextractlinks_test_wordpress_sitemap_like_structure",
+      "target": "test_sitemap_converter_rationale_79",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\test_sitemap_converter.py",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_src": "test_sitemap_converter_rationale_107",
+      "_tgt": "test_sitemap_converter_testconvertsitemap",
+      "source": "test_sitemap_converter_testconvertsitemap",
+      "target": "test_sitemap_converter_rationale_107",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.92,
+      "source_file": "app.py",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "app_flask_api_convert",
+      "_tgt": "route_nextjs_api_convert",
+      "source": "app_flask_api_convert",
+      "target": "route_nextjs_api_convert"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "app.py",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "app_flask_api_download",
+      "_tgt": "route_nextjs_api_download",
+      "source": "app_flask_api_download",
+      "target": "route_nextjs_api_download"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.82,
+      "source_file": "app.py",
+      "source_location": null,
+      "weight": 0.9,
+      "_src": "app_flask_index",
+      "_tgt": "page_nextjs_ui",
+      "source": "app_flask_index",
+      "target": "page_nextjs_ui"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/page.tsx",
+      "source_location": "line 134",
+      "weight": 1.0,
+      "_src": "page_nextjs_ui",
+      "_tgt": "route_nextjs_api_convert",
+      "source": "route_nextjs_api_convert",
+      "target": "page_nextjs_ui"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.93,
+      "source_file": "app/api/convert/route.ts",
+      "source_location": "line 149",
+      "weight": 1.0,
+      "_src": "concept_same_domain_filtering",
+      "_tgt": "route_nextjs_api_convert",
+      "source": "route_nextjs_api_convert",
+      "target": "concept_same_domain_filtering"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/page.tsx",
+      "source_location": "line 253",
+      "weight": 1.0,
+      "_src": "page_nextjs_ui",
+      "_tgt": "route_nextjs_api_download",
+      "source": "route_nextjs_api_download",
+      "target": "page_nextjs_ui"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/download/route.ts",
+      "source_location": "line 38",
+      "weight": 1.0,
+      "_src": "route_nextjs_api_download",
+      "_tgt": "route_nextjs_build_xml",
+      "source": "route_nextjs_api_download",
+      "target": "route_nextjs_build_xml"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "python_stack",
+      "label": "Python Implementation Stack (CLI + Flask + Tkinter)",
+      "nodes": [
+        "sitemap_converter_convert_sitemap",
+        "sitemap_converter_fetch_page",
+        "sitemap_converter_extract_links",
+        "sitemap_converter_main",
+        "sitemap_converter_launch_gui",
+        "app_flask_api_convert",
+        "app_flask_api_download",
+        "app_flask_index"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "sitemap_converter.py"
+    },
+    {
+      "id": "nextjs_stack",
+      "label": "Next.js Implementation Stack (React + API Routes)",
+      "nodes": [
+        "page_nextjs_ui",
+        "layout_nextjs",
+        "route_nextjs_api_convert",
+        "route_nextjs_api_download",
+        "route_nextjs_build_xml",
+        "concept_streaming_ndjson"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "app/page.tsx"
+    },
+    {
+      "id": "convert_request_flow",
+      "label": "Conversion Request Flow (UI -> API -> Parse -> Return Links)",
+      "nodes": [
+        "page_nextjs_ui",
+        "route_nextjs_api_convert",
+        "concept_same_domain_filtering",
+        "concept_streaming_ndjson"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "app/api/convert/route.ts"
+    }
+  ]
+}
