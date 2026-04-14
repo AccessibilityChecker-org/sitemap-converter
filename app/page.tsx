@@ -242,20 +242,40 @@ export default function Page() {
 
   const handleSendToClassifier = async () => {
     if (!links.length) return;
+
+    // Handoff protocol v1: pass URLs to the classifier via URL hash so they
+    // never hit the server and have no practical length limit. The classifier
+    // reads #ace-import=<base64-json> on mount, switches to PASTE URLS, fills
+    // the textarea, and shows a confirmation popup.
+    const payload = {
+      v: 1,
+      source: "ace-sitemap-converter",
+      source_url: window.location.origin,
+      count: links.length,
+      urls: links,
+      issued_at: new Date().toISOString(),
+    };
+    const json = JSON.stringify(payload);
+    // base64url — safe inside a URL fragment
+    const b64 = btoa(unescape(encodeURIComponent(json)))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+    const handoffUrl = `${CLASSIFIER_URL}#ace-import=${b64}`;
+
+    // Best-effort clipboard fallback in case the classifier build is older
+    // and doesn't understand the hash protocol yet.
     try {
       await navigator.clipboard.writeText(links.join("\n"));
     } catch {
-      /* clipboard may fail — still open classifier */
+      /* ignore */
     }
+
     showToast(
-      `↗ Opening ACE classifier · ${links.length} URL${links.length === 1 ? "" : "s"} copied — paste into 'PASTE URLS' tab`,
-      4500
+      `↗ Opening ACE classifier · sending ${links.length} URL${links.length === 1 ? "" : "s"}…`,
+      4000
     );
-    window.open(
-      `${CLASSIFIER_URL}?from=ace-sitemap-converter&count=${links.length}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    window.open(handoffUrl, "_blank", "noopener,noreferrer");
   };
 
   const paddedCount = String(finished ? finalCount : links.length).padStart(3, "0");
